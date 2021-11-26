@@ -15,8 +15,13 @@ ENV GOARCH=${arch}
 ENV GOOS=linux
 RUN cd lntop && mkdir bin/ && /build/go/bin/go build -o bin/lntop cmd/lntop/main.go
 
-FROM debian:buster-slim
+FROM tsl0922/ttyd:latest
 
-USER 1000
-WORKDIR /build
+RUN apt-get update && apt-get install -y screen
+
 COPY --from=builder /build/lntop/bin/lntop /bin/
+
+RUN groupadd -r nodecmd --gid=1984 && useradd -r -g nodecmd --uid=1984 --create-home --shell /bin/bash nodecmd
+
+USER nodecmd
+WORKDIR /home/nodecmd
