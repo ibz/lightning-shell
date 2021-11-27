@@ -17,7 +17,7 @@ RUN cd lntop && mkdir bin/ && /build/go/bin/go build -o bin/lntop cmd/lntop/main
 
 FROM tsl0922/ttyd:latest
 
-RUN apt-get update && apt-get install -y screen vim
+RUN apt-get update && apt-get install -y screen sysstat vim
 
 COPY --from=builder /build/lntop/bin/lntop /bin/
 
