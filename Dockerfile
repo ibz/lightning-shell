@@ -21,7 +21,7 @@ RUN apt-get update && apt-get install -y screen vim
 
 COPY --from=builder /build/lntop/bin/lntop /bin/
 
-RUN groupadd -r nodecmd --gid=1000 && useradd -r -g nodecmd --uid=1000 --create-home --shell /bin/bash nodecmd
+RUN groupadd -r wesh --gid=1000 && useradd -r -g wesh --uid=1000 --create-home --shell /bin/bash wesh
 
-USER nodecmd
-WORKDIR /home/nodecmd
+USER wesh
+WORKDIR /home/wesh
