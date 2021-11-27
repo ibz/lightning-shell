@@ -17,11 +17,11 @@ RUN cd lntop && mkdir bin/ && /build/go/bin/go build -o bin/lntop cmd/lntop/main
 
 FROM tsl0922/ttyd:latest
 
-RUN apt-get update && apt-get install -y screen
+RUN apt-get update && apt-get install -y screen vim
 
 COPY --from=builder /build/lntop/bin/lntop /bin/
 
-RUN groupadd -r nodecmd --gid=1984 && useradd -r -g nodecmd --uid=1984 --create-home --shell /bin/bash nodecmd
+RUN groupadd -r nodecmd --gid=1000 && useradd -r -g nodecmd --uid=1000 --create-home --shell /bin/bash nodecmd
 
 USER nodecmd
 WORKDIR /home/nodecmd
