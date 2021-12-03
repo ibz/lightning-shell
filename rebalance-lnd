@@ -1,0 +1,3 @@
+#!/bin/bash
+
+/rebalance-lnd/rebalance.py --grpc=${LND_HOST}:10009 --lnddir=/lnd $@

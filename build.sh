@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION=v0.0.8
+VERSION=v0.1.0
 
 declare -a architectures=("amd64" "arm64")
 
