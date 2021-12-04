@@ -1,12 +1,17 @@
+ARG ttyd_tag=1.6.3
+
+ARG charge_lnd_tag=v0.2.8
+ARG lntop_commit=a05908a
+ARG rebalance_lnd_tag=v2.1
+ARG suez_commit=335d430
+
 FROM debian:buster-slim AS builder
 
 ARG arch
 
-ARG ttyd_tag=1.6.3
-
-ARG lntop_commit=a05908a
-ARG suez_commit=335d430
-ARG rebalance_lnd_tag=v2.1
+ARG ttyd_tag
+ARG lntop_commit
+ARG suez_commit
 
 WORKDIR /build
 
@@ -33,22 +38,34 @@ RUN cd /build && git clone https://github.com/prusnak/suez.git && cd suez && git
 
 FROM debian:buster-slim
 
+ARG charge_lnd_tag
+ARG rebalance_lnd_tag
+ARG suez_commit
+
 RUN apt-get update && apt-get install -y curl git libjson-c-dev libwebsockets-dev procps python3 python3-grpcio python3-pip screen sysstat tini vim
 
 COPY --from=builder /build/ttyd /bin/
 
 COPY --from=builder /build/lntop/bin/lntop /bin/
 
+RUN git clone --depth 1 --branch ${charge_lnd_tag} https://github.com/accumulator/charge-lnd.git /charge-lnd
+# we already installed grpcio above using apt-get. installing it via pip would take forever on arm64 (no compatible wheel exists, so it would try to compile it from source)
+RUN cd /charge-lnd && cat requirements.txt | grep -v grpcio > requirements-nogrpcio.txt && pip3 install -r requirements-nogrpcio.txt
+RUN cd /charge-lnd && python3 setup.py install
+RUN rm -rf /charge-lnd
+RUN mv /usr/local/bin/charge-lnd /usr/local/bin/charge-lnd-original
+COPY charge-lnd /bin/
+RUN chmod +x /bin/charge-lnd
+
+RUN git clone --depth 1 --branch ${rebalance_lnd_tag} https://github.com/C-Otto/rebalance-lnd.git /rebalance-lnd
+# no grpcio again, same as above
+RUN cd /rebalance-lnd && cat requirements.txt | grep -v grpcio > requirements-nogrpcio.txt && pip3 install -r requirements-nogrpcio.txt
+COPY rebalance-lnd /bin/
+RUN chmod +x /bin/rebalance-lnd
+
 RUN git clone https://github.com/prusnak/suez.git /suez && cd /suez && git checkout ${suez_commit}
 COPY --from=builder /build/suez/requirements.txt /suez/requirements.txt
 RUN pip3 install -r /suez/requirements.txt
-
-RUN git clone https://github.com/C-Otto/rebalance-lnd.git /rebalance-lnd && cd /rebalance-lnd && git checkout ${rebalance_lnd_tag}
-# we already installed grpcio above using apt-get. installing it via pip would take forever on arm64 (no compatible wheel exists, so it would try to compile it from source)
-RUN cd /rebalance-lnd && cat requirements.txt | grep -v grpcio > requirements-nogrpcio.txt && pip3 install -r requirements-nogrpcio.txt
-
-COPY rebalance-lnd /bin/
-RUN chmod +x /bin/rebalance-lnd
 
 RUN groupadd -r wesh --gid=1000 && useradd -r -g wesh --uid=1000 --create-home --shell /bin/bash wesh
 
