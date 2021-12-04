@@ -26,10 +26,11 @@ The docker image can be built using `docker buildx build --platform=linux/arm64 
 
 # Pre-built images
 
-You can run a pre-built image from Docker Hub directly on your Umbrel using `docker run -p 7681:7681 ibz0/wesh:v0.1.0`. You can then access the shell by pointing your browser at http://umbrel.local:7681.
+You can run a pre-built image from Docker Hub directly on your Umbrel using `docker run -p 7681:7681 ibz0/wesh:v0.1.4`. You can then access the shell by pointing your browser at http://umbrel.local:7681.
 
 # Included utilities
 
-* [`lntop`](https://github.com/edouardparis/lntop/)
+* [`charge-lnd`](https://github.com/accumulator/charge-lnd)
+* [`lntop`](https://github.com/edouardparis/lntop)
 * [`rebalance-lnd`](https://github.com/C-Otto/rebalance-lnd)
 * [`suez`](https://github.com/prusnak/suez) (not working yet, waiting for the REST API support [to be merged](https://github.com/prusnak/suez/pull/32))
