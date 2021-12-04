@@ -2,7 +2,7 @@
 
 `wesh` is a web shell for the [Umbrel](https://github.com/getumbrel/) personal server.
 
-Technically it's basically [ttyd](https://github.com/tsl0922/ttyd) packaged for Umbrel plus some additional utilities.
+Technically it's just a Docker container with [ttyd](https://github.com/tsl0922/ttyd) and some additional utilities.
 
 # Why?
 
@@ -10,9 +10,15 @@ The web-based tools that come with Umbrel are amazing but there will always be s
 
 # Why not just SSH?
 
-SSH works very well indeed. The problem is the compilation / packaging of the utilities.
+SSH works very well indeed. The problem is the compilation, packaging and configuration of the utilities.
 
-Let's say you compile `lntop` and make it work on your Umbrel - it's not hard, but also non-trivial for beginners. Then you want up update Umbrel OS - *bang* you just lost `lntop`.
+Let's say you compile `lntop` and make it work on your Umbrel - it's not hard, but it may be a challenge for a complete beginner. Then you want up update Umbrel OS - *bang* you just lost `lntop`. Good luck bringing it back if you didn't write down the exact steps.
+
+And every such utility has its own quirks about how it needs to be installed and configured. You spend time figuring it all out, then you lose it all with a simple OS update.
+
+An alternative is, of course, to keep scripts of the exact steps so you can re-run them when needed. And this is exactly what I did with `wesh`.
+
+**Feel free to simply copy-paste parts of the Dockerfile. There is no need to install the whole thing.**
 
 # Build
 
@@ -20,14 +26,10 @@ The docker image can be built using `docker buildx build --platform=linux/arm64 
 
 # Pre-built images
 
-You can run a pre-built image from Docker Hub using `docker run -p 7681:7681 ibz0/wesh:v0.0.7`. You can then access the shell by pointing your browser to http://localhost:7681
+You can run a pre-built image from Docker Hub directly on your Umbrel using `docker run -p 7681:7681 ibz0/wesh:v0.1.0`. You can then access the shell by pointing your browser at http://umbrel.local:7681.
 
 # Included utilities
 
-For now, [`lntop`](https://github.com/edouardparis/lntop/), which I found very useful in observing issues with Lightning channels. Plus the standard stuff you know from Linux. More to come.
-
-# Example commands
-
-* `top`
-* `iostat -dx 1`
-* `lntop`
+* [`lntop`](https://github.com/edouardparis/lntop/)
+* [`rebalance-lnd`](https://github.com/C-Otto/rebalance-lnd)
+* [`suez`](https://github.com/prusnak/suez) (not working yet, waiting for the REST API support [to be merged](https://github.com/prusnak/suez/pull/32))
