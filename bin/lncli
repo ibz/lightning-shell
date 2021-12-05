@@ -1,0 +1,3 @@
+#!/bin/bash
+
+/bin/lncli --rpcserver=${LND_HOST}:10009 --lnddir=/lnd $@

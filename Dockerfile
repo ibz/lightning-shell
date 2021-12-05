@@ -1,6 +1,7 @@
 ARG ttyd_tag=1.6.3
 
 ARG charge_lnd_tag=v0.2.8
+ARG lnd_tag=v0.14.1-beta
 ARG lntop_commit=a05908a
 ARG rebalance_lnd_tag=v2.1
 ARG suez_commit=335d430
@@ -10,6 +11,7 @@ FROM debian:buster-slim AS builder
 ARG arch
 
 ARG ttyd_tag
+ARG lnd_tag
 ARG lntop_commit
 ARG suez_commit
 
@@ -36,6 +38,10 @@ RUN cd /build/lntop && mkdir bin && /build/go/bin/go build -o bin/lntop cmd/lnto
 RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/install-poetry.py | python3 -
 RUN cd /build && git clone https://github.com/prusnak/suez.git && cd suez && git checkout ${suez_commit} && /root/.local/bin/poetry export -f requirements.txt --output requirements.txt --without-hashes
 
+# getting lnd
+RUN curl -sSL -o /lnd.tgz https://github.com/lightningnetwork/lnd/releases/download/${lnd_tag}/lnd-linux-${arch}-${lnd_tag}.tar.gz
+RUN cd / && tar xzf lnd.tgz && mv lnd-linux-${arch}-${lnd_tag} /lnd
+
 FROM debian:buster-slim
 
 ARG charge_lnd_tag
@@ -53,24 +59,26 @@ RUN git clone --depth 1 --branch ${charge_lnd_tag} https://github.com/accumulato
 RUN cd /charge-lnd && cat requirements.txt | grep -v grpcio > requirements-nogrpcio.txt && pip3 install -r requirements-nogrpcio.txt
 RUN cd /charge-lnd && python3 setup.py install
 RUN rm -rf /charge-lnd
-RUN mv /usr/local/bin/charge-lnd /usr/local/bin/charge-lnd-original
-COPY charge-lnd /bin/
-RUN chmod +x /bin/charge-lnd
 
 RUN git clone --depth 1 --branch ${rebalance_lnd_tag} https://github.com/C-Otto/rebalance-lnd.git /rebalance-lnd
 # no grpcio again, same as above
 RUN cd /rebalance-lnd && cat requirements.txt | grep -v grpcio > requirements-nogrpcio.txt && pip3 install -r requirements-nogrpcio.txt
-COPY rebalance-lnd /bin/
-RUN chmod +x /bin/rebalance-lnd
 
 RUN git clone https://github.com/prusnak/suez.git /suez && cd /suez && git checkout ${suez_commit}
 COPY --from=builder /build/suez/requirements.txt /suez/requirements.txt
 RUN pip3 install -r /suez/requirements.txt
 
+COPY --from=builder /lnd/lncli /bin
+
 RUN groupadd -r wesh --gid=1000 && useradd -r -g wesh --uid=1000 --create-home --shell /bin/bash wesh
 
 USER wesh
 WORKDIR /home/wesh
+
+RUN mkdir -p /home/wesh/.local/bin
+COPY --chown=wesh:wesh bin/charge-lnd bin/rebalance-lnd bin/suez bin/lncli /home/wesh/.local/bin/
+RUN cd /home/wesh/.local/bin/ && chmod o+x charge-lnd rebalance-lnd suez lncli
+RUN echo "PATH=~/.local/bin:$PATH; export PATH" >> /home/wesh/.bashrc
 
 EXPOSE 7681
 

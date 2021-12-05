@@ -1,0 +1,3 @@
+#!/bin/bash
+
+/suez/suez --client-args=--rpcserver=${LND_HOST}:10009 --client-args=--lnddir=/lnd $@
