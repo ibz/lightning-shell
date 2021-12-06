@@ -26,7 +26,7 @@ The docker image can be built using `docker buildx build --platform=linux/arm64 
 
 # Pre-built images
 
-You can run a pre-built image from Docker Hub directly on your Umbrel using `docker run -p 7681:7681 ibz0/wesh:v0.2.0`. You can then access the shell by pointing your browser at http://umbrel.local:7681.
+You can run a pre-built image from Docker Hub directly on your Umbrel using `docker run -p 7681:7681 ibz0/wesh:v0.2.1`. You can then access the shell by pointing your browser at http://umbrel.local:7681.
 
 # Included utilities
 
