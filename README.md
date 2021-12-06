@@ -8,7 +8,7 @@ Technically it's just a Docker container with [ttyd](https://github.com/tsl0922/
 
 The web-based tools that come with Umbrel are amazing but there will always be some case where you want to access the terminal, whether to investigate system performance using standard Linux tools or to run some of the many amazing command-line utilities useful for managing your LN node.
 
-# Why not just SSH?
+## Why not just SSH?
 
 SSH works very well indeed. The problem is the compilation, packaging and configuration of the utilities.
 
@@ -20,7 +20,7 @@ An alternative is, of course, to keep scripts of the exact steps so you can re-r
 
 **Feel free to simply copy-paste parts of the Dockerfile. There is no need to install the whole thing.**
 
-# Build
+# Building
 
 The docker image can be built using `docker buildx build --platform=linux/arm64 --build-arg arch=arm64 .`
 
@@ -38,4 +38,8 @@ You can run a pre-built image from Docker Hub directly on your Umbrel using `doc
 
 # Configuration
 
-Running any of the above-mentioned utilities should just work provided you pass the following environment variables: `LND_HOST`, `LND_ADDRESS`, `CERT_PATH`, `MACAROON_PATH` to the Docker container and mount the `lnd` directory under `/lnd`. This is normally done by Umbrel itself if you start wesh using Umbrel's dashboard or `scripts/app start`.
+Running any of the above-mentioned utilities should just work (without you having to tell them how to connect to LND!) provided you pass the following environment variables to the Docker container: `LND_HOST`, `LND_ADDRESS`, `CERT_PATH`, `MACAROON_PATH` and mount the `lnd` directory under `/lnd`. This is normally done by Umbrel itself if you start wesh using Umbrel's dashboard or `scripts/app start` (which starts the container using docker-compose and does all the magic).
+
+## How does this work?
+
+There are some additional scripts in `~/.local/bin` named the same as the above, which take care of passing the necessary arguments.
