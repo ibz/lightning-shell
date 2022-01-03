@@ -1,0 +1,15 @@
+#!/bin/bash
+
+if [ "$1" == 'describe' ]; then
+        echo "Show this help text."
+        exit 0
+fi
+
+echo "Available commands:"
+echo
+for c in `ls ./.local/bin/`; do
+    echo " $c"
+    echo "  " `./.local/bin/$c describe`
+done
+echo
+echo "Use the /data directory to store files that you don't want to lose (configuration files, custom scripts, etc.)"

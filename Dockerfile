@@ -69,6 +69,7 @@ RUN pip3 install -r /suez/requirements.txt
 COPY --from=builder /lnd/lncli /bin/
 COPY --from=builder /build/lntop/bin/lntop /bin/
 COPY --from=builder /build/ttyd /bin/
+COPY motd /etc/motd
 
 RUN groupadd -r wesh --gid=1000 && useradd -r -g wesh --uid=1000 --create-home --shell /bin/bash wesh
 
@@ -76,11 +77,13 @@ USER wesh
 WORKDIR /home/wesh
 
 RUN mkdir -p /home/wesh/.local/bin
-COPY --chown=wesh:wesh bin/charge-lnd bin/rebalance-lnd bin/suez bin/lncli /home/wesh/.local/bin/
-RUN cd /home/wesh/.local/bin/ && chmod o+x charge-lnd rebalance-lnd suez lncli
+COPY --chown=wesh:wesh bin/* /home/wesh/.local/bin/
+RUN cd /home/wesh/.local/bin/ && chmod o+x *
 RUN echo "PATH=~/.local/bin:$PATH; export PATH" >> /home/wesh/.bashrc
+RUN echo "cat /etc/motd" >> /home/wesh/.bashrc
 
 EXPOSE 7681
 
-ENTRYPOINT ["/usr/bin/tini", "--"]
-CMD ["/bin/ttyd", "bash"]
+ENV APP_PASSWORD=
+
+ENTRYPOINT /usr/bin/tini /bin/ttyd -- --credential umbrel:${APP_PASSWORD} bash

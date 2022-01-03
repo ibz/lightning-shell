@@ -1,3 +1,8 @@
 #!/bin/bash
 
-/usr/local/bin/charge-lnd --grpc=${LND_HOST}:10009 --lnddir=/lnd $@
+if [ "$1" == 'describe' ]; then
+        echo 'A simple policy based fee manager for LND.'
+        exit 0
+fi
+
+/usr/local/bin/charge-lnd --grpc=${LND_IP}:${LND_GRPC_PORT} --lnddir=/lnd $@

@@ -1,0 +1,8 @@
+#!/bin/bash
+
+if [ "$1" == 'describe' ]; then
+        echo "LN terminal dashboard."
+        exit 0
+fi
+
+LND_ADDRESS="//${LND_IP}:${LND_GRPC_PORT}" CERT_PATH=/lnd/tls.cert MACAROON_PATH=/lnd/data/chain/bitcoin/mainnet/readonly.macaroon /bin/lntop $@

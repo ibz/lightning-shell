@@ -1,3 +1,8 @@
 #!/bin/bash
 
-/bin/lncli --rpcserver=${LND_HOST}:10009 --lnddir=/lnd $@
+if [ "$1" == 'describe' ]; then
+        echo "LND's command line interface."
+        exit 0
+fi
+
+/bin/lncli --rpcserver=${LND_IP}:${LND_GRPC_PORT} --lnddir=/lnd $@

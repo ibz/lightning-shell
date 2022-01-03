@@ -1,0 +1,9 @@
+#!/bin/bash
+
+if [ "$1" == 'describe' ]; then
+        exit 0
+fi
+
+echo "Wesh ${WESH_VERSION} by @ibz / https://ibz.me"
+echo "Read more at https://ibz.github.io/wesh/"
+echo "Pull Requests to add / update utilities are very welcome!"

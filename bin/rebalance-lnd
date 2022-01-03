@@ -1,3 +1,8 @@
 #!/bin/bash
 
-/rebalance-lnd/rebalance.py --grpc=${LND_HOST}:10009 --lnddir=/lnd $@
+if [ "$1" == 'describe' ]; then
+        echo "A script that can be used to balance lightning channels of a LND node."
+        exit 0
+fi
+
+/rebalance-lnd/rebalance.py --grpc=${LND_IP}:${LND_GRPC_PORT} --lnddir=/lnd $@
