@@ -71,16 +71,18 @@ COPY --from=builder /build/lntop/bin/lntop /bin/
 COPY --from=builder /build/ttyd /bin/
 COPY motd /etc/motd
 
-RUN groupadd -r wesh --gid=1000 && useradd -r -g wesh --uid=1000 --create-home --shell /bin/bash wesh
+RUN groupadd -r lnshell --gid=1000 && useradd -r -g lnshell --uid=1000 --create-home --shell /bin/bash lnshell
 
-USER wesh
-WORKDIR /home/wesh
+USER lnshell
+WORKDIR /home/lnshell
 
-RUN mkdir -p /home/wesh/.local/bin
-COPY --chown=wesh:wesh bin/* /home/wesh/.local/bin/
-RUN cd /home/wesh/.local/bin/ && chmod o+x *
-RUN echo "PATH=~/.local/bin:$PATH; export PATH" >> /home/wesh/.bashrc
-RUN echo "cat /etc/motd" >> /home/wesh/.bashrc
+ARG version
+RUN mkdir -p /home/lnshell/.local/bin
+COPY --chown=lnshell:lnshell bin/* /home/lnshell/.local/bin/
+RUN cd /home/lnshell/.local/bin/ && chmod o+x *
+RUN echo "PATH=~/.local/bin:$PATH; export PATH" >> /home/lnshell/.bashrc
+RUN echo "cat /etc/motd" >> /home/lnshell/.bashrc
+RUN echo "${version}" > /home/lnshell/.lnshell-version
 
 EXPOSE 7681
 

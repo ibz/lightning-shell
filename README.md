@@ -1,6 +1,6 @@
-# wesh
+# Lightning Shell
 
-`wesh` is a web shell for the [Umbrel](https://github.com/getumbrel/) personal server.
+**Lightning Shell** is a web shell for the [Umbrel](https://github.com/getumbrel/) personal server.
 
 Technically it's just a Docker container with [ttyd](https://github.com/tsl0922/ttyd) and some additional utilities.
 
@@ -16,7 +16,7 @@ Let's say you compile `lntop` and make it work on your Umbrel - it's not hard, b
 
 And every such utility has its own quirks about how it needs to be installed and configured. You spend time figuring it all out, then you lose it all with a simple OS update.
 
-An alternative is, of course, to keep scripts of the exact steps so you can re-run them when needed. And this is exactly what I did with `wesh`.
+An alternative is, of course, to keep scripts of the exact steps so you can re-run them when needed. And this is exactly what I did.
 
 **Feel free to simply copy-paste parts of the Dockerfile. There is no need to install the whole thing.**
 
@@ -26,7 +26,7 @@ The docker image can be built using `docker buildx build --platform=linux/arm64 
 
 # Pre-built images
 
-You can run a pre-built image from Docker Hub directly on your Umbrel using `docker run -p 7681:7681 ibz0/wesh:v0.3.2`. You can then access the shell by pointing your browser at http://umbrel.local:7681.
+You can run a pre-built image from Docker Hub directly on your Umbrel using `docker run -p 7681:7681 ibz0/lightning-shell:v0.1.1`. You can then access the shell by pointing your browser at http://umbrel.local:7681.
 
 # Included utilities
 
@@ -38,7 +38,7 @@ You can run a pre-built image from Docker Hub directly on your Umbrel using `doc
 
 # Configuration
 
-Running any of the above-mentioned utilities should just work (without you having to tell them how to connect to LND!) provided you pass the `LND_IP` environment variable to the Docker container and mount the `lnd` directory under `/lnd`. This is normally done by Umbrel itself if you start wesh using Umbrel's dashboard or `scripts/app start` (which starts the container using docker-compose and does all the magic).
+Running any of the above-mentioned utilities should just work (without you having to tell them how to connect to LND!) provided you pass the `LND_IP` environment variable to the Docker container and mount the `lnd` directory under `/lnd`. This is normally done by Umbrel itself if you start Lightning Shell using Umbrel's dashboard or `scripts/app start` (which starts the container using docker-compose and does all the magic).
 
 ## How does this work?
 

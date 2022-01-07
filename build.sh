@@ -2,7 +2,7 @@
 
 trap "exit" INT
 
-VERSION=v0.3.2
+VERSION=v0.1.1
 
 declare -a architectures=("amd64" "arm64")
 
@@ -16,8 +16,9 @@ lnd_version='v0.14.1-beta'
 for architecture in "${architectures[@]}"; do
   echo "Building ${VERSION} for ${architecture}..."
   docker buildx build --platform linux/${architecture} \
-    --tag ibz0/wesh-${architecture}:${VERSION} --output "type=registry" \
+    --tag ibz0/lightning-shell-${architecture}:${VERSION} --output "type=registry" \
     --build-arg arch=${architecture} \
+    --build-arg version=${VERSION} \
     --build-arg go_version=${go_version} \
     --build-arg go_checksum=${go_checksums[${architecture}]} \
     --build-arg lnd_version=${lnd_version} \
@@ -26,13 +27,13 @@ done
 
 echo "Creating manifest list..."
 for architecture in "${architectures[@]}"; do
-  echo " ibz0/wesh-${architecture}:${VERSION}"
-done | xargs docker manifest create ibz0/wesh:${VERSION}
+  echo " ibz0/lightning-shell-${architecture}:${VERSION}"
+done | xargs docker manifest create ibz0/lightning-shell:${VERSION}
 
 for architecture in "${architectures[@]}"; do
   echo "Annotating manifest for ${architecture}..."
-  docker manifest annotate ibz0/wesh:${VERSION} ibz0/wesh-${architecture}:${VERSION} --arch ${architecture} --os linux
+  docker manifest annotate ibz0/lightning-shell:${VERSION} ibz0/lightning-shell-${architecture}:${VERSION} --arch ${architecture} --os linux
 done
 
 echo "Pushing manifest list..."
-docker manifest push --purge ibz0/wesh:${VERSION}
+docker manifest push --purge ibz0/lightning-shell:${VERSION}
