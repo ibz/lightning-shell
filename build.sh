@@ -19,12 +19,12 @@ done
 
 echo "Creating manifest list..."
 for architecture in "${architectures[@]}"; do
-  echo " ${IMAGE_NAME}-${architecture}:${VERSION}"
+  echo " ${IMAGE_NAME}:${VERSION}-${architecture}"
 done | xargs docker manifest create ${IMAGE_NAME}:${VERSION}
 
 for architecture in "${architectures[@]}"; do
   echo "Annotating manifest for ${architecture}..."
-  docker manifest annotate ${IMAGE_NAME}:${VERSION} ${IMAGE_NAME}-${architecture}:${VERSION} --arch ${architecture} --os linux
+  docker manifest annotate ${IMAGE_NAME}:${VERSION} ${IMAGE_NAME}:${VERSION}-${architecture} --arch ${architecture} --os linux
 done
 
 echo "Pushing manifest list..."
