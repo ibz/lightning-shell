@@ -79,4 +79,4 @@ ENV APP_PASSWORD=
 
 ENV USERNAME=umbrel
 
-ENTRYPOINT /usr/bin/tini /bin/ttyd -- --credential ${USERNAME}:${APP_PASSWORD} bash
+ENTRYPOINT /usr/bin/tini /usr/bin/ttyd -- --credential ${USERNAME}:${APP_PASSWORD} bash
