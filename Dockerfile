@@ -27,7 +27,7 @@ ARG lntop_commit
 RUN cd /build && git clone https://github.com/edouardparis/lntop.git && cd lntop && git checkout ${lntop_commit}
 ENV GOARCH=${arch}
 ENV GOOS=linux
-RUN cd /build/lntop && mkdir bin && /build/go/bin/go build -o bin/lntop cmd/lntop/main.go
+RUN cd /build/lntop && mkdir bin && go build -o bin/lntop cmd/lntop/main.go
 
 # extracting suez requirements
 ARG suez_commit
