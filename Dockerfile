@@ -10,7 +10,7 @@ ARG arch
 
 WORKDIR /build
 
-RUN apt-get update && apt-get install -y build-essential cmake curl git gnupg libjson-c-dev libwebsockets-dev python3 python3-venv
+RUN apt-get update && apt-get install -y build-essential curl git gnupg libjson-c-dev libwebsockets-dev python3 python3-venv
 
 # getting lnd
 ARG lnd_version
@@ -34,14 +34,12 @@ ARG suez_commit
 RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/install-poetry.py | python3 -
 RUN cd /build && git clone https://github.com/prusnak/suez.git && cd suez && git checkout ${suez_commit} && /root/.local/bin/poetry export -f requirements.txt --output requirements.txt --without-hashes
 
-# building ttyd
-ARG ttyd_tag
-RUN cd /build && git clone --depth 1 --branch ${ttyd_tag} https://github.com/tsl0922/ttyd.git
-RUN cd /build/ttyd && mkdir build && cmake . && make
-
 FROM debian:bullseye-slim
 
-RUN apt-get update && apt-get install -y git procps python3 python3-pip screen sysstat tini vim nano micro
+# We need bullseye-backports because that contains ttyd
+RUN echo "deb http://deb.debian.org/debian bullseye-backports main"
+
+RUN apt-get update && apt-get install -y git procps python3 python3-pip screen sysstat tini vim nano micro ttyd
 
 ARG charge_lnd_tag
 RUN git clone --depth 1 --branch ${charge_lnd_tag} https://github.com/accumulator/charge-lnd.git /charge-lnd
@@ -60,7 +58,6 @@ RUN pip3 install -r /suez/requirements.txt
 
 COPY --from=builder /lnd/lncli /bin/
 COPY --from=builder /build/lntop/bin/lntop /bin/
-COPY --from=builder /build/ttyd /bin/
 COPY motd /etc/motd
 
 RUN groupadd -r lnshell --gid=1000 && useradd -r -g lnshell --uid=1000 --create-home --shell /bin/bash lnshell
