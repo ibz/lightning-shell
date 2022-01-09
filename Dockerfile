@@ -41,7 +41,7 @@ RUN cd /build/ttyd && mkdir build && cmake . && make
 
 FROM debian:bullseye-slim
 
-RUN apt-get update && apt-get install -y git libjson-c-dev libwebsockets-dev procps python3 python3-grpcio python3-pip screen sysstat tini vim nano micro
+RUN apt-get update && apt-get install -y git procps python3 python3-pip screen sysstat tini vim nano micro
 
 ARG charge_lnd_tag
 RUN git clone --depth 1 --branch ${charge_lnd_tag} https://github.com/accumulator/charge-lnd.git /charge-lnd
