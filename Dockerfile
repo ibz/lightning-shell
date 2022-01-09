@@ -37,7 +37,7 @@ RUN cd /build && git clone https://github.com/prusnak/suez.git && cd suez && git
 FROM debian:bullseye-slim
 
 # We need bullseye-backports because that contains ttyd
-RUN echo "deb http://deb.debian.org/debian bullseye-backports main"
+RUN echo "deb http://deb.debian.org/debian bullseye-backports main" | tee -a /etc/apt/sources.list
 
 RUN apt-get update && apt-get install -y git procps python3 python3-pip screen sysstat tini vim nano micro ttyd
 
