@@ -4,19 +4,13 @@ ARG rebalance_lnd_tag=v2.1
 ARG suez_commit=335d430
 ARG ttyd_tag=1.6.3
 
-FROM debian:buster-slim AS builder
+FROM golang:1.17-bullseye AS builder
 
 ARG arch
 
 WORKDIR /build
 
 RUN apt-get update && apt-get install -y build-essential cmake curl git gnupg libjson-c-dev libwebsockets-dev python3 python3-venv
-
-# Debian Buster comes with Go 1.11, but we need at least 1.15, so we need to download it
-ARG go_version
-ARG go_checksum
-RUN curl -sSL -o /build/go.tgz https://dl.google.com/go/go${go_version}.linux-${arch}.tar.gz
-RUN echo "${go_checksum} /build/go.tgz" | sha256sum -c - && tar xzf /build/go.tgz
 
 # getting lnd
 ARG lnd_version
@@ -45,21 +39,19 @@ ARG ttyd_tag
 RUN cd /build && git clone --depth 1 --branch ${ttyd_tag} https://github.com/tsl0922/ttyd.git
 RUN cd /build/ttyd && mkdir build && cmake . && make
 
-FROM debian:buster-slim
+FROM debian:bullseye-slim
 
-RUN apt-get update && apt-get install -y git libjson-c-dev libwebsockets-dev procps python3 python3-grpcio python3-pip screen sysstat tini vim
+RUN apt-get update && apt-get install -y git libjson-c-dev libwebsockets-dev procps python3 python3-grpcio python3-pip screen sysstat tini vim nano micro
 
 ARG charge_lnd_tag
 RUN git clone --depth 1 --branch ${charge_lnd_tag} https://github.com/accumulator/charge-lnd.git /charge-lnd
-# we already installed grpcio above using apt-get. installing it via pip would take forever on arm64 (no compatible wheel exists, so it would try to compile it from source)
-RUN cd /charge-lnd && cat requirements.txt | grep -v grpcio > requirements-nogrpcio.txt && pip3 install -r requirements-nogrpcio.txt
+RUN cd /charge-lnd && pip3 install -r requirements.txt
 RUN cd /charge-lnd && python3 setup.py install
 RUN rm -rf /charge-lnd
 
 ARG rebalance_lnd_tag
 RUN git clone --depth 1 --branch ${rebalance_lnd_tag} https://github.com/C-Otto/rebalance-lnd.git /rebalance-lnd
-# no grpcio again, same as above
-RUN cd /rebalance-lnd && cat requirements.txt | grep -v grpcio > requirements-nogrpcio.txt && pip3 install -r requirements-nogrpcio.txt
+RUN cd /rebalance-lnd && pip3 install -r requirements.txt
 
 ARG suez_commit
 RUN git clone https://github.com/prusnak/suez.git /suez && cd /suez && git checkout ${suez_commit}
