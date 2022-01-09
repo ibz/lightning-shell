@@ -10,7 +10,7 @@ ARG arch
 
 WORKDIR /build
 
-RUN apt-get update && apt-get install -y build-essential curl git gnupg libjson-c-dev libwebsockets-dev python3 python3-venv
+RUN apt-get update && apt-get install -y curl git gnupg python3 python3-venv
 
 # getting lnd
 ARG lnd_version
@@ -31,7 +31,7 @@ RUN cd /build/lntop && mkdir bin && go build -o bin/lntop cmd/lntop/main.go
 
 # extracting suez requirements
 ARG suez_commit
-RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/install-poetry.py | python3 -
+RUN curl -sSL https://install.python-poetry.org | python3 -
 RUN cd /build && git clone https://github.com/prusnak/suez.git && cd suez && git checkout ${suez_commit} && /root/.local/bin/poetry export -f requirements.txt --output requirements.txt --without-hashes
 
 FROM debian:bullseye-slim
