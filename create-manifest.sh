@@ -32,6 +32,6 @@ echo "Pushing manifest list..."
 docker manifest push --purge ${MANIFEST_NAME}
 
 # If $4 isn't true and $BASE_IMAGE is bullseye, rerun this script with $4 set to true
-if [[ "${4}" != "true" && "${BASE_IMAGE}" == "bullseye" ]]; then
+if [[ "${4}" != "true" && "${BASE_IMAGE}" == "bullseye-slim" ]]; then
     ./create-manifest.sh "${IMAGE_NAME}" "${VERSION}" "${BASE_IMAGE}" "true"
 fi
