@@ -62,7 +62,8 @@ COPY --from=builder /lnd/lncli /bin/
 COPY --from=builder /build/lntop/bin/lntop /bin/
 COPY motd /etc/motd
 
-RUN groupadd -r lnshell --gid=1000 && useradd -r -g lnshell --uid=1000 --create-home --shell /bin/bash lnshell
+# The node container already has an user called node, rename it
+RUN groupmod --new-name lnshell node && usermod --login lnshell --move-home --home /home/lnshell node
 
 USER lnshell
 WORKDIR /home/lnshell
