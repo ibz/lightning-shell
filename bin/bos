@@ -1,0 +1,18 @@
+#!/bin/bash
+
+if [ "$1" == 'describe' ]; then
+        echo "Balance of Satoshis - Commands for working with LND balances."
+        exit 0
+fi
+
+mkdir ~/.bos/mainnode
+
+cat << EOF >> ~/.bos/mainnode/credentials.json
+{
+    "cert": "$(base64 -w0 /lnd/tls.cert)",
+    "macaroon": "$(base64 -w0 /lnd/data/chain/bitcoin/${BITCOIN_NETWORK:-mainnet}/admin.macaroon)",
+    "socket": "${LND_IP}:${LND_GRPC_PORT}"
+}
+EOF
+
+/bin/bos --node=mainnode $@

@@ -34,7 +34,9 @@ ARG suez_commit
 RUN curl -sSL https://install.python-poetry.org | python3 -
 RUN cd /build && git clone https://github.com/prusnak/suez.git && cd suez && git checkout ${suez_commit} && /root/.local/bin/poetry export -f requirements.txt --output requirements.txt --without-hashes
 
-FROM debian:bullseye-slim
+FROM node:16-bullseye-slim
+
+RUN npm i -g balanceofsatoshis
 
 # We need bullseye-backports because that contains ttyd
 RUN echo "deb http://deb.debian.org/debian bullseye-backports main" | tee -a /etc/apt/sources.list
