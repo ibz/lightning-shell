@@ -44,7 +44,7 @@ RUN echo "deb http://deb.debian.org/debian ${DEBIAN_VERSION}-backports main" | t
 
 RUN apt update \
     && apt upgrade -y \
-    && apt install -y --no-install-recommends git procps python3 python3-pip screen sysstat tini vim nano micro <VERSION_SPECIFIC_DEPENDENCIES> \
+    && apt install -y --no-install-recommends git procps python3 python3-pip python3-wheel screen sysstat tini vim nano micro <VERSION_SPECIFIC_DEPENDENCIES> \
     && apt clean \
     && rm -rf /var/lib/apt/lists/*
 
