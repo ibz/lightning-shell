@@ -45,7 +45,7 @@ RUN npm i -g balanceofsatoshis
 
 RUN apt update \
     && apt upgrade -y \
-    && apt install -y --no-install-recommends git procps python3 python3-pip python3-grpcio screen sysstat tini vim nano libc6 libcap2 libev4 libjson-c3 libwebsockets8 libssl1.1 libuv1 zlib1g \
+    && apt install -y --no-install-recommends git procps python3 python3-pip python3-grpcio python3-setuptools screen sysstat tini vim nano libc6 libcap2 libev4 libjson-c3 libwebsockets8 libssl1.1 libuv1 zlib1g \
     && apt clean \
     && rm -rf /var/lib/apt/lists/*
 
