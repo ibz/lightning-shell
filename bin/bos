@@ -5,7 +5,7 @@ if [ "$1" == 'describe' ]; then
         exit 0
 fi
 
-mkdir /home/lnshell/.bos/mainnode
+mkdir -p /home/lnshell/.bos/mainnode
 
 # If /home/lnshell/.bos/mainnode/credentials.json doesn't exist, create it
 if [[ ! -f /home/lnshell/.bos/mainnode/credentials.json ]]; then 
@@ -18,4 +18,4 @@ cat << EOF >> /home/lnshell/.bos/mainnode/credentials.json
 EOF
 fi
 
-/bin/bos $@ --node=mainnode
+/usr/local/bin/bos $@ --node=mainnode
