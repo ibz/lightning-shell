@@ -44,7 +44,7 @@ jobs:
       - name: Run Docker buildx
         run: |
           docker buildx build --platform linux/${{ matrix.architecture }} \
-            --tag ghcr.io/${{ github.repository_owner }}/${IMAGE_NAME}:${TAG}-${{ matrix.architecture }}-buster-slim --output "type=registry" \
+            --tag ghcr.io/${{ github.repository_owner }}/${IMAGE_NAME}:${TAG}-buster-slim-${{ matrix.architecture }} --output "type=registry" \
             --build-arg arch=${{ matrix.architecture }} \
             --build-arg version=${TAG} \
             --build-arg lnd_version=v0.14.1-beta \

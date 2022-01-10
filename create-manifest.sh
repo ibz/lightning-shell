@@ -4,7 +4,7 @@ IMAGE_NAME=${1}
 VERSION=${2}
 BASE_IMAGE=${3}
 VERSION_PREFIX="${VERSION}-${BASE_IMAGE}"
-FINAL_NAME="${FINAL_NAME}"
+FINAL_NAME="${IMAGE_NAME}:${VERSION}-${BASE_IMAGE}"
 declare -a architectures=("amd64" "arm64")
 
 for architecture in "${architectures[@]}"; do
