@@ -34,11 +34,12 @@ ARG suez_commit
 RUN curl -sSL https://install.python-poetry.org | python3 -
 RUN cd /build && git clone https://github.com/prusnak/suez.git && cd suez && git checkout ${suez_commit} && /root/.local/bin/poetry export -f requirements.txt --output requirements.txt --without-hashes
 
+# VERSION_SPECIFIC_BUILD_STEPS
+
 FROM node:16-bullseye-slim
 
 RUN npm i -g balanceofsatoshis
 
-# We need bullseye-backports because that contains ttyd
 RUN echo "deb http://deb.debian.org/debian bullseye-backports main" | tee -a /etc/apt/sources.list
 
 RUN apt update \
@@ -64,6 +65,7 @@ RUN pip3 install -r /suez/requirements.txt
 
 COPY --from=builder /lnd/lncli /bin/
 COPY --from=builder /build/lntop/bin/lntop /bin/
+# VERSION_SPECIFIC_COPY_STEPS
 COPY motd /etc/motd
 
 # The node container already has an user called node, rename it
