@@ -1,4 +1,4 @@
-name: Build Bullseye image
+name: Build images on push
 
 permissions:
   packages: write
@@ -17,6 +17,9 @@ jobs:
         architecture:
           - "arm64"
           - "amd64"
+        base:
+          - "buster"
+          - "bullseye"
 
     steps:
       - name: Checkout project
@@ -42,17 +45,24 @@ jobs:
 
       - name: Run Docker buildx
         run: |
+          ./generate-dockerfiles.sh
           docker buildx build --platform linux/${{ matrix.architecture }} \
-            --tag ghcr.io/${{ github.repository_owner }}/${IMAGE_NAME}:${BRANCH}-bullseye-slim-${{ matrix.architecture }} --output "type=registry" \
+            --tag ghcr.io/${{ github.repository_owner }}/${IMAGE_NAME}:${BRANCH}-${{ matrix.base }}-slim-${{ matrix.architecture }} --output "type=registry" \
             --build-arg arch=${{ matrix.architecture }} \
             --build-arg version=${BRANCH} \
             --build-arg lnd_version=v0.14.1-beta \
+            --file Dockerfile.${{ matrix.base }} \
             ./
 
   create-manifest:
     name: Create two-architecture manifest
     runs-on: ubuntu-20.04
     needs: build
+    strategy:
+      matrix:
+        base:
+          - "buster"
+          - "bullseye"
 
     steps:
       - name: Checkout project
@@ -71,4 +81,4 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create final manifest
-        run: ./create-manifest.sh "ghcr.io/${{ github.repository_owner }}/${IMAGE_NAME}" "${BRANCH}" "bullseye-slim"
+        run: ./create-manifest.sh "ghcr.io/${{ github.repository_owner }}/${IMAGE_NAME}" "${BRANCH}" "${{ matrix.base }}-slim"
