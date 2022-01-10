@@ -37,7 +37,7 @@ sed -i "s/<VERSION_SPECIFIC_DEPENDENCIES>/python3-grpcio python3-setuptools libc
 # For Buster, we need a special filter to prevent pip from installing grpc, because it would compile it from scratch and that would take too long
 # On Bullseye, pip is able to find a prebuilt wheel, so we don't need this filter
 sed -i "s/<INSTALL_MAYBE_NO_GRPC>/pip3 install -r requirements.txt/g" Dockerfile
-sed -i "s/<INSTALL_MAYBE_NO_GRPC>/cat requirements.txt | grep -v grpcio > requirements-nogrpcio.txt && pip3 install -r requirements-nogrpcio.txt/g" Dockerfile.buster
+sed -i "s/<INSTALL_MAYBE_NO_GRPC>/cat requirements.txt | grep -v grpcio > requirements-nogrpcio.txt \&\& pip3 install -r requirements-nogrpcio.txt/g" Dockerfile.buster
 
 # For Buster, replace "# VERSION_SPECIFIC_COPY_STEPS" with "COPY --from=builder /build/ttyd /usr/bin/", for Bullseye, remove it
 sed -i "/\n# VERSION_SPECIFIC_COPY_STEPS/d" Dockerfile
