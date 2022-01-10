@@ -41,7 +41,11 @@ RUN npm i -g balanceofsatoshis
 # We need bullseye-backports because that contains ttyd
 RUN echo "deb http://deb.debian.org/debian bullseye-backports main" | tee -a /etc/apt/sources.list
 
-RUN apt-get update && apt-get install -y git procps python3 python3-pip screen sysstat tini vim nano micro ttyd
+RUN apt update \
+    && apt upgrade -y \
+    && apt install -y --no-install-recommends git procps python3 python3-pip screen sysstat tini vim nano micro ttyd \
+    && apt clean \
+    && rm -rf /var/lib/apt/lists/*
 
 ARG charge_lnd_tag
 RUN git clone --depth 1 --branch ${charge_lnd_tag} https://github.com/accumulator/charge-lnd.git /charge-lnd
