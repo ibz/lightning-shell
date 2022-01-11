@@ -1,0 +1,21 @@
+#!/bin/bash
+
+if [ "$1" == 'describe' ]; then
+        echo "Balance of Satoshis - Commands for working with LND balances."
+        exit 0
+fi
+
+mkdir -p /home/lnshell/.bos/mainnode
+
+# If /home/lnshell/.bos/mainnode/credentials.json doesn't exist, create it
+if [[ ! -f /home/lnshell/.bos/mainnode/credentials.json ]]; then 
+cat << EOF >> /home/lnshell/.bos/mainnode/credentials.json
+{
+    "cert": "$(base64 -w0 /lnd/tls.cert)",
+    "macaroon": "$(base64 -w0 /lnd/data/chain/bitcoin/${BITCOIN_NETWORK:-mainnet}/admin.macaroon)",
+    "socket": "${LND_IP}:${LND_GRPC_PORT}"
+}
+EOF
+fi
+
+/usr/local/bin/bos $@ --node=mainnode
