@@ -1,32 +1,39 @@
 # Lightning Shell
 
-**Lightning Shell** is a web shell for Bitcoin nodes.
-Currently, it's used on [Umbrel](https://github.com/getumbrel/umbrel) and [Citadel](https://github.com/runcitadel/core).
+**Lightning Shell** is a web shell for Bitcoin nodes / personal servers.
+
+Currently, it is used on [Umbrel](https://getumbrel.com/) and [Citadel](https://runcitadel.space/).
 
 Technically it's just a Docker container with [ttyd](https://github.com/tsl0922/ttyd) and some additional utilities.
 
 ## Why?
 
-The web-based tools that come with Umbrel are amazing but there will always be some case where you want to access the terminal, whether to investigate system performance using standard Linux tools or to run some of the many amazing command-line utilities useful for managing your LN node.
+The web-based tools that come with these personal servers are amazing, but there will always be some case where you want to access the terminal, whether to investigate system performance using standard Linux tools or to run some of the many amazing command-line utilities useful for managing your Lightning Network node.
 
 ### Why not just SSH?
 
-SSH works very well indeed. The problem is the compilation, packaging and configuration of the utilities.
+SSH works very well indeed. The problem is the compilation, packaging and configuration of the various utilities.
 
 Let's say you compile `lntop` and make it work on your node - it's not hard, but it may be a bit of a challenge for a complete beginner. Then you want to update the OS and reflash the SD card - _bang_ you just lost `lntop`. Good luck bringing it back if you didn't write down the exact steps.
 
 And every such utility has its own quirks about how it needs to be installed and configured. You spend time figuring it all out, then you lose it all with a simple reflash.
 
-An alternative is, of course, to keep scripts of the exact steps so you can re-run them when needed. And this is exactly what I did.
+An alternative is, of course, to keep scripts of the exact steps so you can re-run them when needed. And this is exactly what **Lightning Shell** does: it builds and packages various command line utilities so you don't have to.
 
-**Feel free to simply copy-paste parts of the Dockerfile. There is no need to install the whole thing.**
+## Installing
+
+The easiest way to install **Lightning Shell** is **from your node's *app store***.
+
+At the opposite end of the spectrum, you could simply copy-paste parts of the Dockerfile to build only the tools you want without actually installing Lightning Shell.
+
+There are countless other ways to make use of it in between the two extremes: you could for example run the pre-built Docker image yourself, you could fork this repo and customize the Docker file... It's all up to you.
 
 ## Building
 
-The Dockerfile can be generated using `./generate-dockerfiles.sh`, then,
-the container can be built using
-`docker buildx build --platform=linux/arm64 --build-arg arch=arm64 --build-arg version=dev .`
+The Dockerfiles can be generated from the template using `./generate-dockerfiles.sh`
 
+To build the container you can use something like this:
+`docker buildx build --platform=linux/arm64 --build-arg arch=arm64 --build-arg version=dev --build-arg lnd_version=v0.14.1-beta .`
 
 ## Included utilities
 
