@@ -25,7 +25,7 @@ An alternative is, of course, to keep scripts of the exact steps so you can re-r
 
 The Dockerfile can be generated using `./generate-dockerfiles.sh`, then,
 the container can be built using
-`docker buildx build --platform=linux/arm64 --build-arg arch=arm64 --build-arg versioon=dev .`
+`docker buildx build --platform=linux/arm64 --build-arg arch=arm64 --build-arg version=dev .`
 
 
 ## Included utilities
