@@ -1,5 +1,5 @@
 ARG charge_lnd_tag=v0.2.8
-ARG lntop_commit=a05908a
+ARG lntop_tag=v0.3.1
 ARG rebalance_lnd_tag=v2.2
 ARG suez_commit=335d430
 
@@ -28,8 +28,8 @@ RUN cd /build && gpg --verify manifest-guggero-${lnd_version}.sig manifest-${lnd
 #####
 
 # building lntop
-ARG lntop_commit
-RUN cd /build && git clone https://github.com/edouardparis/lntop.git && cd lntop && git checkout ${lntop_commit}
+ARG lntop_tag
+RUN cd /build && git clone --depth 1 --branch ${lntop_tag} https://github.com/edouardparis/lntop.git
 ENV GOARCH=${arch}
 ENV GOOS=linux
 RUN cd /build/lntop && mkdir bin && go build -o bin/lntop cmd/lntop/main.go
