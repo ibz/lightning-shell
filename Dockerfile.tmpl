@@ -2,7 +2,7 @@ ARG charge_lnd_tag=v0.2.8
 ARG lntop_commit=a05908a
 ARG rebalance_lnd_tag=v2.2
 ARG suez_commit=335d430
-ARG ttyd_tag=1.6.3
+ARG ttyd_commit=45f7b4e
 
 FROM golang:1.17-${DEBIAN_VERSION} AS builder
 
@@ -33,6 +33,11 @@ RUN cd /build/lntop && mkdir bin && go build -o bin/lntop cmd/lntop/main.go
 ARG suez_commit
 RUN curl -sSL https://install.python-poetry.org | python3 -
 RUN cd /build && git clone https://github.com/prusnak/suez.git && cd suez && git checkout ${suez_commit} && /root/.local/bin/poetry export -f requirements.txt --output requirements.txt --without-hashes
+
+# building ttyd
+ARG ttyd_commit
+RUN cd /build && git clone https://github.com/tsl0922/ttyd.git && cd ttyd && git checkout ${ttyd_commit}
+RUN cd /build/ttyd && mkdir build && cmake . && make
 
 # VERSION_SPECIFIC_BUILD_STEPS
 

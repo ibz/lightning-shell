@@ -19,12 +19,8 @@ cat Dockerfile.tmpl >> Dockerfile.buster
 sed -i "s/\${DEBIAN_VERSION}/bullseye/g" Dockerfile
 sed -i "s/\${DEBIAN_VERSION}/buster/g" Dockerfile.buster
 
-# In case of Debian Buster, replace '# VERSION_SPECIFIC_BUILD_STEPS' with the following:
-#    # building ttyd
-#    ARG ttyd_tag
-#    RUN cd /build && git clone --depth 1 --branch ${ttyd_tag} https://github.com/tsl0922/ttyd.git
-#    RUN cd /build/ttyd && mkdir build && cmake . && make
-sed -i "s/# VERSION_SPECIFIC_BUILD_STEPS/# building ttyd\nARG ttyd_tag\nRUN cd \/build \&\& git clone --depth 1 --branch \${ttyd_tag} https:\/\/github.com\/tsl0922\/ttyd.git\nRUN cd \/build\/ttyd \&\& mkdir build \&\& cmake . \&\& make/g" Dockerfile.buster
+# no VERSION_SPECIFIC_BUILD_STEPS for now
+sed -i "/\n# VERSION_SPECIFIC_BUILD_STEPS/d" Dockerfile.buster
 # For Bullseye, just remove it
 sed -i "/\n# VERSION_SPECIFIC_BUILD_STEPS/d" Dockerfile
 
