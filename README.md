@@ -33,7 +33,7 @@ There are countless other ways to make use of it in between the two extremes: yo
 The Dockerfiles can be generated from the template using `./generate-dockerfiles.sh`
 
 To build the container you can use something like this:
-`docker buildx build --platform=linux/arm64 --build-arg arch=arm64 --build-arg version=dev --build-arg lnd_version=v0.14.1-beta .`
+`docker buildx build --platform=linux/arm64 --build-arg arch=arm64 --build-arg version=dev .`
 
 ## Included utilities
 
