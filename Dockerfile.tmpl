@@ -10,7 +10,10 @@ ARG arch
 
 WORKDIR /build
 
-RUN apt-get update && apt-get install -y curl git gnupg python3 python3-venv <VERSION_SPECIFIC_BUILD_DEPENDENCIES>
+RUN apt-get update \
+    && apt-get install -y curl git gnupg python3 python3-venv \
+    # for building ttyd
+    && apt-get install -y build-essential cmake libjson-c-dev libwebsockets-dev
 
 # getting lnd
 ARG lnd_version
@@ -50,6 +53,8 @@ RUN echo "deb http://deb.debian.org/debian ${DEBIAN_VERSION}-backports main" | t
 RUN apt update \
     && apt upgrade -y \
     && apt install -y --no-install-recommends git procps python3 python3-pip python3-wheel screen sysstat tini vim nano micro tmux <VERSION_SPECIFIC_DEPENDENCIES> \
+    # for ttyd
+    && apt install -y libc6 libcap2 libev4 libjson-c3 libwebsockets8 libssl1.1 libuv1 zlib1g \
     && apt clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -70,6 +75,7 @@ RUN pip3 install -r /suez/requirements.txt
 
 COPY --from=builder /lnd/lncli /bin/
 COPY --from=builder /build/lntop/bin/lntop /bin/
+COPY --from=builder /build/ttyd /usr/bin/
 # VERSION_SPECIFIC_COPY_STEPS
 COPY motd /etc/motd
 

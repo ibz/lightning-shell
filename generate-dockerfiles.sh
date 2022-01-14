@@ -21,27 +21,24 @@ sed -i "s/\${DEBIAN_VERSION}/buster/g" Dockerfile.buster
 
 # no VERSION_SPECIFIC_BUILD_STEPS for now
 sed -i "/\n# VERSION_SPECIFIC_BUILD_STEPS/d" Dockerfile.buster
-# For Bullseye, just remove it
 sed -i "/\n# VERSION_SPECIFIC_BUILD_STEPS/d" Dockerfile
 
 # Version specific dependencies
-# For Bullseye, this is ttyd, which is only in bullseye-backports, not in buster
-sed -i "s/<VERSION_SPECIFIC_DEPENDENCIES>/ttyd/g" Dockerfile
-# For Bullseye, we manually add all dependencies from bullseye's ttyd, and we also need python3-grpcio and python3-setuptools for Python dependencies
-sed -i "s/<VERSION_SPECIFIC_DEPENDENCIES>/python3-grpcio python3-setuptools libc6 libcap2 libev4 libjson-c3 libwebsockets8 libssl1.1 libuv1 zlib1g/g" Dockerfile.buster
+sed -i "s/<VERSION_SPECIFIC_DEPENDENCIES>//" Dockerfile
+# For Buster, we need python3-grpcio and python3-setuptools for Python dependencies
+sed -i "s/<VERSION_SPECIFIC_DEPENDENCIES>/python3-grpcio python3-setuptools/g" Dockerfile.buster
 
 # For Buster, we need a special filter to prevent pip from installing grpc, because it would compile it from scratch and that would take too long
 # On Bullseye, pip is able to find a prebuilt wheel, so we don't need this filter
 sed -i "s/<INSTALL_MAYBE_NO_GRPC>/pip3 install -r requirements.txt/g" Dockerfile
 sed -i "s/<INSTALL_MAYBE_NO_GRPC>/cat requirements.txt | grep -v grpcio > requirements-nogrpcio.txt \&\& pip3 install -r requirements-nogrpcio.txt/g" Dockerfile.buster
 
-# For Buster, replace "# VERSION_SPECIFIC_COPY_STEPS" with "COPY --from=builder /build/ttyd /usr/bin/", for Bullseye, remove it
+# no VERSION_SPECIFIC_COPY_STEPS for now
 sed -i "/\n# VERSION_SPECIFIC_COPY_STEPS/d" Dockerfile
-sed -i "s/# VERSION_SPECIFIC_COPY_STEPS/COPY --from=builder \/build\/ttyd \/usr\/bin\//g" Dockerfile.buster
+sed -i "/\n# VERSION_SPECIFIC_COPY_STEPS/d" Dockerfile.buster
 
-# For Buster, we are building ttyd manually.
-# This requires build-essential cmake libjson-c-dev libwebsockets-dev
-sed -i "s/<VERSION_SPECIFIC_BUILD_DEPENDENCIES>/build-essential cmake  libjson-c-dev libwebsockets-dev/g" Dockerfile.buster
+# no VERSION_SPECIFIC_BUILD_DEPENDENCIES for now
+sed -i "s/<VERSION_SPECIFIC_BUILD_DEPENDENCIES>//g" Dockerfile.buster
 sed -i "s/ <VERSION_SPECIFIC_BUILD_DEPENDENCIES>//g" Dockerfile
 
 cp Dockerfile Dockerfile.bullseye
