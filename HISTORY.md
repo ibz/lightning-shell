@@ -1,3 +1,9 @@
+## 2022-01-15 v0.1.3
+
+* build ttyd from master hoping to solve the WebGL bug on iOS
+* update rebalance-lnd to v2.2
+* update lntop to v0.3.0
+
 ## 2022-01-11 v0.1.2 (thanks, @AaronDewes / @runcitadel)
 
 * use GitHub actions to build
