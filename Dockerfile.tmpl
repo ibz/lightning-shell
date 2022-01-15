@@ -74,7 +74,7 @@ RUN cd /charge-lnd && python3 setup.py install
 RUN rm -rf /charge-lnd
 
 ARG igniter_tag
-RUN git clone --depth 1 --branch ${igniter_tag} git@github.com:RooSoft/igniter.git /igniter
+RUN git clone --depth 1 --branch ${igniter_tag} https://github.com/RooSoft/igniter.git /igniter
 RUN chmod +x /igniter/igniter.sh
 
 ARG rebalance_lnd_tag
