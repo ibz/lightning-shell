@@ -63,7 +63,7 @@ RUN apt update \
     && apt upgrade -y \
     && apt install -y --no-install-recommends git procps python3 python3-pip python3-wheel screen sysstat tini vim nano micro tmux <VERSION_SPECIFIC_DEPENDENCIES> \
     # for ttyd
-    && apt install -y libc6 libcap2 libssl1.1 libuv1 zlib1g \
+    && apt install -y libc6 libcap2 libssl1.1 libuv1 zlib1g libev4 \
     && apt clean \
     && rm -rf /var/lib/apt/lists/*
 
