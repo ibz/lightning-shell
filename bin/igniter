@@ -1,0 +1,8 @@
+#!/bin/bash
+
+if [ "$1" == 'describe' ]; then
+        echo "Circular rebalancing by sending a payment back to yourself using a specific route."
+        exit 0
+fi
+
+/igniter/igniter.sh $@

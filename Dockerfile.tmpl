@@ -1,6 +1,7 @@
 ARG lnd_version=v0.14.1-beta
 
 ARG charge_lnd_tag=v0.2.8
+ARG igniter_tag=1.0.0
 ARG lntop_tag=v0.3.0
 ARG rebalance_lnd_tag=v2.2
 ARG suez_commit=335d430
@@ -71,6 +72,10 @@ RUN git clone --depth 1 --branch ${charge_lnd_tag} https://github.com/accumulato
 RUN cd /charge-lnd && <INSTALL_MAYBE_NO_GRPC>
 RUN cd /charge-lnd && python3 setup.py install
 RUN rm -rf /charge-lnd
+
+ARG igniter_tag
+RUN git clone --depth 1 --branch ${igniter_tag} git@github.com:RooSoft/igniter.git /igniter
+RUN chmod +x /igniter/igniter.sh
 
 ARG rebalance_lnd_tag
 RUN git clone --depth 1 --branch ${rebalance_lnd_tag} https://github.com/C-Otto/rebalance-lnd.git /rebalance-lnd
