@@ -37,12 +37,14 @@ To build the container you can use something like this:
 
 ## Included utilities
 
-- `lncli`
+- `lncli` (of course)
+
+- [`bos`](https://github.com/alexbosworth/balanceofsatoshis)
 - [`charge-lnd`](https://github.com/accumulator/charge-lnd)
+- [`igniter`](https://github.com/RooSoft/igniter)
 - [`lntop`](https://github.com/edouardparis/lntop)
 - [`rebalance-lnd`](https://github.com/C-Otto/rebalance-lnd)
 - [`suez`](https://github.com/prusnak/suez)
-- [`bos`](https://github.com/alexbosworth/balanceofsatoshis)
 
 ## Configuration
 
