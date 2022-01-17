@@ -1,0 +1,6 @@
+{
+	"dependencies": {
+		"balanceofsatoshis": "v11.27.0",
+		"dependencies": "0.0.1"
+	}
+}
