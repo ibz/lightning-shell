@@ -4,6 +4,7 @@ ARG balanceofsatoshis_tag=v11.27.0
 ARG charge_lnd_tag=v0.2.8
 ARG igniter_tag=1.0.0
 ARG lntop_tag=v0.3.0
+ARG perfectly_balanced_tag=v0.0.9
 ARG rebalance_lnd_tag=v2.2
 ARG suez_commit=335d430
 
@@ -78,6 +79,10 @@ RUN rm -rf /charge-lnd
 ARG igniter_tag
 RUN git clone --depth 1 --branch ${igniter_tag} https://github.com/RooSoft/igniter.git /igniter
 RUN chmod +x /igniter/igniter.sh
+
+ARG perfectly_balanced_tag
+RUN git clone --depth 1 --branch ${perfectly_balanced_tag} https://github.com/cuaritas/perfectly-balanced.git /perfectly-balanced
+RUN chmod +x /perfectly-balanced/perfectlybalanced.sh
 
 ARG rebalance_lnd_tag
 RUN git clone --depth 1 --branch ${rebalance_lnd_tag} https://github.com/C-Otto/rebalance-lnd.git /rebalance-lnd
