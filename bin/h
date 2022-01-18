@@ -5,11 +5,16 @@ if [ "$1" == 'describe' ]; then
         exit 0
 fi
 
+if [ "$1" == 'url' ]; then
+        exit 0
+fi
+
 echo "Available commands:"
 echo
 for c in `ls ./.local/bin/`; do
     echo " $c"
     echo "  " `./.local/bin/$c describe`
+    echo "  " `./.local/bin/$c url`
 done
 echo
 echo "Use the /data directory to store files that you don't want to lose (configuration files, custom scripts, etc.)"

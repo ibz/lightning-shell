@@ -5,4 +5,8 @@ if [ "$1" == 'describe' ]; then
         exit 0
 fi
 
+if [ "$1" == 'url' ]; then
+        exit 0
+fi
+
 /bin/lncli --rpcserver=${LND_IP}:${LND_GRPC_PORT} --lnddir=/lnd $@

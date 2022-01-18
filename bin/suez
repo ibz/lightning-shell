@@ -5,4 +5,9 @@ if [ "$1" == 'describe' ]; then
         exit 0
 fi
 
+if [ "$1" == 'url' ]; then
+        echo "https://github.com/prusnak/suez"
+        exit 0
+fi
+
 /suez/suez --client-args=--rpcserver=${LND_IP}:${LND_GRPC_PORT} --client-args=--lnddir=/lnd $@

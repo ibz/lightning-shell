@@ -4,6 +4,27 @@ if [ "$1" == 'describe' ]; then
         exit 0
 fi
 
-echo "Lightning Shell `cat /home/lnshell/.lnshell-version` by @ibz / https://ibz.me"
-echo "Read more at https://ibz.github.io/lightning-shell/"
-echo "Pull Requests to add / update utilities are very welcome!"
+if [ "$1" == 'url' ]; then
+        exit 0
+fi
+
+cat << LIGHTNING
+██╗     ██╗ ██████╗ ██╗  ██╗████████╗███╗   ██╗██╗███╗   ██╗ ██████╗
+██║     ██║██╔════╝ ██║  ██║╚══██╔══╝████╗  ██║██║████╗  ██║██╔════╝
+██║     ██║██║  ███╗███████║   ██║   ██╔██╗ ██║██║██╔██╗ ██║██║  ███╗
+██║     ██║██║   ██║██╔══██║   ██║   ██║╚██╗██║██║██║╚██╗██║██║   ██║
+███████╗██║╚██████╔╝██║  ██║   ██║   ██║ ╚████║██║██║ ╚████║╚██████╔╝
+╚══════╝╚═╝ ╚═════╝ ╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═══╝╚═╝╚═╝  ╚═══╝ ╚═════╝
+LIGHTNING
+cat << SHELL
+        ███████╗██╗  ██╗███████╗██╗     ██╗     
+        ██╔════╝██║  ██║██╔════╝██║     ██║     
+        ███████╗███████║█████╗  ██║     ██║     
+        ╚════██║██╔══██║██╔══╝  ██║     ██║     
+        ███████║██║  ██║███████╗███████╗███████╗
+        ╚══════╝╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝
+SHELL
+echo "Lightning Shell `cat /home/lnshell/.lnshell-version` by @ibz / https://ibz.me / https://github.com/ibz"
+echo "Read more at https://lightningshell.app"
+echo "Report issues at https://github.com/ibz/lightning-shell/issues"
+echo "Pull Requests are very welcome!"

@@ -5,6 +5,11 @@ if [ "$1" == 'describe' ]; then
         exit 0
 fi
 
+if [ "$1" == 'url' ]; then
+        echo "https://github.com/RooSoft/igniter"
+        exit 0
+fi
+
 if [ ! -f /data/igniter.conf ]; then
         cp /igniter/igniter.conf /data
 fi

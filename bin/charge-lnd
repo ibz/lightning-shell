@@ -5,4 +5,9 @@ if [ "$1" == 'describe' ]; then
         exit 0
 fi
 
+if [ "$1" == 'url' ]; then
+        echo "https://github.com/accumulator/charge-lnd"
+        exit 0
+fi
+
 /usr/local/bin/charge-lnd --grpc=${LND_IP}:${LND_GRPC_PORT} --lnddir=/lnd $@

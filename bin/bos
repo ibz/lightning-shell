@@ -5,6 +5,11 @@ if [ "$1" == 'describe' ]; then
         exit 0
 fi
 
+if [ "$1" == 'url' ]; then
+        echo "https://github.com/alexbosworth/balanceofsatoshis"
+        exit 0
+fi
+
 mkdir -p /home/lnshell/.bos/mainnode
 
 # If /home/lnshell/.bos/mainnode/credentials.json doesn't exist, create it

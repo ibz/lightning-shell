@@ -5,4 +5,9 @@ if [ "$1" == 'describe' ]; then
         exit 0
 fi
 
+if [ "$1" == 'url' ]; then
+        echo "https://github.com/cuaritas/perfectly-balanced"
+        exit 0
+fi
+
 LND_DIR=/lnd REBALANCE_LND_FILEPATH=/rebalance-lnd/rebalance.py /perfectly-balanced/perfectlybalanced.sh $@
