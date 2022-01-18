@@ -99,6 +99,7 @@ COPY --from=builder /build/lntop/bin/lntop /bin/
 COPY --from=builder /usr/local/lib/libwebsockets.so /usr/local/lib/
 COPY --from=builder /usr/local/lib/libwebsockets.so.19 /usr/local/lib/
 COPY --from=builder /usr/local/lib/libwebsockets-evlib_uv.so /usr/local/lib/
+ENV LD_LIBRARY_PATH /usr/local/lib/
 COPY --from=builder /build/ttyd /usr/bin/
 # VERSION_SPECIFIC_COPY_STEPS
 COPY motd /etc/motd
