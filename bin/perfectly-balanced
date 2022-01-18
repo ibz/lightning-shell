@@ -5,4 +5,4 @@ if [ "$1" == 'describe' ]; then
         exit 0
 fi
 
-LND_DIR=/lnd REBALANCE_LND_FILEPATH=/rebalance-lnd/rebalance.py /perfectly-balanced/perfectlybalanced.sh --grpc=${LND_IP}:${LND_GRPC_PORT} $@
+LND_DIR=/lnd REBALANCE_LND_FILEPATH=/rebalance-lnd/rebalance.py /perfectly-balanced/perfectlybalanced.sh $@
