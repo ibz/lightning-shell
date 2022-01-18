@@ -5,4 +5,12 @@ if [ "$1" == 'describe' ]; then
         exit 0
 fi
 
+if [ ! -f /data/igniter.conf ]; then
+        cp /igniter/igniter.conf /data
+fi
+
+if [ ! -f ~/igniter.conf ]; then
+        ln -s /data/igniter.conf ~/
+fi
+
 /igniter/igniter.sh $@

@@ -80,8 +80,9 @@ ARG igniter_tag
 RUN git clone --depth 1 --branch ${igniter_tag} https://github.com/RooSoft/igniter.git /igniter
 RUN chmod +x /igniter/igniter.sh
 
+# NB: the --branch trick doesn't work for perfectly-balanced, because it has a branch named the same as the tag
 ARG perfectly_balanced_tag
-RUN git clone --depth 1 --branch ${perfectly_balanced_tag} https://github.com/cuaritas/perfectly-balanced.git /perfectly-balanced
+RUN git clone https://github.com/cuaritas/perfectly-balanced.git /perfectly-balanced && cd /perfectly-balanced && git checkout ${perfectly_balanced_tag}
 RUN chmod +x /perfectly-balanced/perfectlybalanced.sh
 
 ARG rebalance_lnd_tag
