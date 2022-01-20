@@ -9,12 +9,20 @@ if [ "$1" == 'url' ]; then
         exit 0
 fi
 
+echo
 echo "Available commands:"
 echo
 for c in `ls ./.local/bin/`; do
     echo " $c"
-    echo "  " `./.local/bin/$c describe`
-    echo "  " `./.local/bin/$c url`
+    DESC=`./.local/bin/$c describe`
+    if [ ! "$DESC" == "" ]; then
+        echo "     "$DESC
+    fi
+    URL=`./.local/bin/$c url`
+    if [ ! "$URL" == "" ]; then
+        echo "     "$URL
+    fi
 done
 echo
 echo "Use the /data directory to store files that you don't want to lose (configuration files, custom scripts, etc.)"
+echo
