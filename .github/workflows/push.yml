@@ -17,10 +17,10 @@ jobs:
       matrix:
         architecture:
           - "arm64"
-          - "amd64"
+#          - "amd64"
         base:
           - "buster"
-          - "bullseye"
+#          - "bullseye"
 
     steps:
       - name: Checkout project
@@ -62,7 +62,7 @@ jobs:
       matrix:
         base:
           - "buster"
-          - "bullseye"
+#          - "bullseye"
 
     steps:
       - name: Checkout project
