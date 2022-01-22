@@ -136,7 +136,7 @@ WORKDIR /home/lnshell
 ARG version
 RUN mkdir -p /home/lnshell/.local/bin
 COPY --chown=lnshell:lnshell bin/* /home/lnshell/.local/bin/
-RUN cd /home/lnshell/.local/bin/ && chmod o+x *
+RUN cd /home/lnshell/.local/bin/ && chmod +x *
 RUN echo "PATH=~/.local/bin:$PATH; export PATH" >> /home/lnshell/.bashrc
 RUN echo "cat /etc/motd" >> /home/lnshell/.bashrc
 RUN echo "${version}" > /home/lnshell/.lnshell-version
