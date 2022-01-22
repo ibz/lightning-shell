@@ -2,8 +2,11 @@ ARG lnd_version=v0.14.1-beta
 
 ARG balanceofsatoshis_tag=v11.30.0
 ARG charge_lnd_tag=v0.2.8
+ARG dog_commit=721440b
+ARG gping_tag=gping-v1.2.7
 ARG igniter_tag=1.0.0
 ARG lntop_tag=v0.3.0
+ARG oha_tag=v0.5.0
 ARG perfectly_balanced_tag=v0.0.9
 ARG rebalance_lnd_tag=v2.2
 ARG suez_commit=335d430
@@ -11,7 +14,7 @@ ARG suez_commit=335d430
 ARG lws_tag=v4.3.0
 ARG ttyd_commit=45f7b4e
 
-FROM golang:1.17-${DEBIAN_VERSION} AS builder
+FROM golang:1.17-${DEBIAN_VERSION} AS golang-builder
 
 ARG arch
 
@@ -20,7 +23,8 @@ WORKDIR /build
 RUN apt-get update \
     && apt-get install -y curl git gnupg python3 python3-venv \
     # for building ttyd
-    && apt-get install -y build-essential cmake libjson-c-dev libwebsockets-dev
+    && apt-get install -y build-essential cmake libjson-c-dev libwebsockets-dev \
+    && apt clean all
 
 # getting lnd
 ARG lnd_version
@@ -55,6 +59,26 @@ RUN cd /build/ttyd && mkdir build && cmake . && make
 
 # VERSION_SPECIFIC_BUILD_STEPS
 
+FROM rust:1-slim-${DEBIAN_VERSION} AS rust-builder
+
+RUN apt-get update \
+    && apt-get install -y git libssl-dev pkg-config \
+    && apt clean all
+
+WORKDIR /build
+
+ARG dog_commit
+RUN cd /build && git clone https://github.com/ogham/dog.git && cd dog && git checkout ${dog_commit}
+RUN cd /build/dog && cargo build --release
+
+ARG gping_tag
+RUN cd /build && git clone --depth 1 --branch ${gping_tag} https://github.com/orf/gping.git
+RUN cd /build/gping && cargo build --release
+
+ARG oha_tag
+RUN cd /build && git clone --depth 1 --branch ${oha_tag} https://github.com/hatoo/oha.git
+RUN cd /build/oha && cargo build --release
+
 FROM node:16-${DEBIAN_VERSION}-slim
 
 ARG balanceofsatoshis_tag
@@ -64,10 +88,8 @@ RUN echo "deb http://deb.debian.org/debian ${DEBIAN_VERSION}-backports main" | t
 
 RUN apt update \
     && apt upgrade -y \
-    && apt install -y --no-install-recommends bc git jq procps python3 python3-pip python3-wheel screen sysstat tini vim nano micro tmux <VERSION_SPECIFIC_DEPENDENCIES> \
-    # for ttyd
-    && apt install -y libc6 libcap2 libssl1.1 libuv1 zlib1g \
-    && apt clean \
+    && apt install -y --no-install-recommends bc ca-certificates curl git iputils-ping jq libc6 libcap2 libssl1.1 libuv1 micro nano procps python3 python3-pip python3-wheel screen sysstat tini tmux vim zlib1g <VERSION_SPECIFIC_DEPENDENCIES> \
+    && apt clean all \
     && rm -rf /var/lib/apt/lists/*
 
 ARG charge_lnd_tag
@@ -91,17 +113,23 @@ RUN cd /rebalance-lnd && <INSTALL_MAYBE_NO_GRPC>
 
 ARG suez_commit
 RUN git clone https://github.com/prusnak/suez.git /suez && cd /suez && git checkout ${suez_commit}
-COPY --from=builder /build/suez/requirements.txt /suez/requirements.txt
+COPY --from=golang-builder /build/suez/requirements.txt /suez/requirements.txt
 RUN pip3 install -r /suez/requirements.txt
 
-COPY --from=builder /lnd/lncli /bin/
-COPY --from=builder /build/lntop/bin/lntop /bin/
-COPY --from=builder /usr/local/lib/libwebsockets.so /usr/local/lib/
-COPY --from=builder /usr/local/lib/libwebsockets.so.19 /usr/local/lib/
-COPY --from=builder /usr/local/lib/libwebsockets-evlib_uv.so /usr/local/lib/
+COPY --from=golang-builder /lnd/lncli /bin/
+COPY --from=golang-builder /build/lntop/bin/lntop /bin/
+COPY --from=golang-builder /usr/local/lib/libwebsockets.so /usr/local/lib/
+COPY --from=golang-builder /usr/local/lib/libwebsockets.so.19 /usr/local/lib/
+COPY --from=golang-builder /usr/local/lib/libwebsockets-evlib_uv.so /usr/local/lib/
 ENV LD_LIBRARY_PATH /usr/local/lib/
-COPY --from=builder /build/ttyd /usr/bin/
+COPY --from=golang-builder /build/ttyd /usr/bin/
+
+COPY --from=rust-builder /build/dog/target/release/dog /bin/
+COPY --from=rust-builder /build/gping/target/release/gping /bin/
+COPY --from=rust-builder /build/oha/target/release/oha /bin/
+
 # VERSION_SPECIFIC_COPY_STEPS
+
 COPY motd /etc/motd
 
 # The node container already has an user called node, rename it
