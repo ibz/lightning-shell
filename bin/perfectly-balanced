@@ -1,6 +1,8 @@
 #!/bin/bash
 
 if [ "$1" == 'describe' ]; then
+        echo "OFF"
+        exit 0
         echo 'Script to make your LND node pefectly balanced as everything in life should be.'
         exit 0
 fi
