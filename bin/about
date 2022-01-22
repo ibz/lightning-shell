@@ -8,6 +8,8 @@ if [ "$1" == 'url' ]; then
         exit 0
 fi
 
+version=`cat /home/lnshell/.lnshell-version`
+
 echo
 cat << LIGHTNING
 ██╗     ██╗ ██████╗ ██╗  ██╗████████╗███╗   ██╗██╗███╗   ██╗ ██████╗
@@ -25,8 +27,15 @@ cat << SHELL
         ███████║██║  ██║███████╗███████╗███████╗
         ╚══════╝╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝
 SHELL
-echo "Lightning Shell `cat /home/lnshell/.lnshell-version` by @ibz / https://ibz.me / https://github.com/ibz"
+echo
+echo "Lightning Shell ${version} by @ibz / https://ibz.me"
+echo
 echo "Read more at https://lightningshell.app"
+if [ ! "$version" == "main" ]; then
+        echo
+        echo "See what's new at https://lightningshell.app/posts/${version}/"
+fi
+echo
 echo "Report issues at https://github.com/ibz/lightning-shell/issues"
-echo "Pull Requests are very welcome!"
+echo "Pull Requests are also very welcome!"
 echo
