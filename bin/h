@@ -13,8 +13,11 @@ echo
 echo "Available commands:"
 echo
 for c in `ls ./.local/bin/`; do
-    echo " $c"
     DESC=`./.local/bin/$c describe`
+    if [ "$DESC" == "OFF" ]; then
+        continue
+    fi
+    echo " $c"
     if [ ! "$DESC" == "" ]; then
         echo "     "$DESC
     fi
