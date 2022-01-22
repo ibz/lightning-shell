@@ -21,7 +21,7 @@ ARG arch
 WORKDIR /build
 
 RUN apt-get update \
-    && apt-get install -y curl git gnupg python3 python3-venv \
+    && apt-get install -y curl git gnupg \
     # for building ttyd
     && apt-get install -y build-essential cmake libjson-c-dev libwebsockets-dev \
     && apt clean all
@@ -34,19 +34,12 @@ RUN curl -sSL -o /build/manifest-${lnd_version}.txt https://github.com/lightning
 RUN curl https://raw.githubusercontent.com/lightningnetwork/lnd/master/scripts/keys/guggero.asc | gpg --import
 RUN cd /build && gpg --verify manifest-guggero-${lnd_version}.sig manifest-${lnd_version}.txt && tar xzf lnd-linux-${arch}-${lnd_version}.tar.gz && mv lnd-linux-${arch}-${lnd_version} /lnd
 
-#####
-
 # building lntop
 ARG lntop_tag
 RUN cd /build && git clone --depth 1 --branch ${lntop_tag} https://github.com/edouardparis/lntop.git
 ENV GOARCH=${arch}
 ENV GOOS=linux
 RUN cd /build/lntop && mkdir bin && go build -o bin/lntop cmd/lntop/main.go
-
-# extracting suez requirements
-ARG suez_commit
-RUN curl -sSL https://install.python-poetry.org | python3 -
-RUN cd /build && git clone https://github.com/prusnak/suez.git && cd suez && git checkout ${suez_commit} && /root/.local/bin/poetry export -f requirements.txt --output requirements.txt --without-hashes
 
 # building lws & ttyd
 ARG lws_tag
@@ -88,7 +81,7 @@ RUN echo "deb http://deb.debian.org/debian ${DEBIAN_VERSION}-backports main" | t
 
 RUN apt update \
     && apt upgrade -y \
-    && apt install -y --no-install-recommends bc ca-certificates curl git iputils-ping jq libc6 libcap2 libssl1.1 libuv1 micro nano procps python3 python3-pip python3-wheel screen sysstat tini tmux vim zlib1g <VERSION_SPECIFIC_DEPENDENCIES> \
+    && apt install -y --no-install-recommends bc ca-certificates curl git iputils-ping jq libc6 libcap2 libssl1.1 libuv1 micro nano procps python3 python3-pip python3-venv python3-wheel screen sysstat tini tmux vim zlib1g <VERSION_SPECIFIC_DEPENDENCIES> \
     && apt clean all \
     && rm -rf /var/lib/apt/lists/*
 
@@ -111,9 +104,11 @@ ARG rebalance_lnd_tag
 RUN git clone --depth 1 --branch ${rebalance_lnd_tag} https://github.com/C-Otto/rebalance-lnd.git /rebalance-lnd
 RUN cd /rebalance-lnd && <INSTALL_MAYBE_NO_GRPC>
 
+# extracting and installing suez requirements
 ARG suez_commit
+RUN curl -sSL https://install.python-poetry.org | python3 -
 RUN git clone https://github.com/prusnak/suez.git /suez && cd /suez && git checkout ${suez_commit}
-COPY --from=golang-builder /build/suez/requirements.txt /suez/requirements.txt
+RUN cd /suez && /root/.local/bin/poetry export -f requirements.txt --output requirements.txt --without-hashes
 RUN pip3 install -r /suez/requirements.txt
 
 COPY --from=golang-builder /lnd/lncli /bin/
