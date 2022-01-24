@@ -55,7 +55,7 @@ RUN cd /build/ttyd && mkdir build && cmake . && make
 FROM rust:1-slim-${DEBIAN_VERSION} AS rust-builder
 
 RUN apt-get update \
-    && apt-get install -y git libssl-dev pkg-config \
+    && apt-get install -y git gzip libssl-dev pandoc pkg-config \
     && apt clean all
 
 WORKDIR /build
@@ -63,6 +63,7 @@ WORKDIR /build
 ARG dog_commit
 RUN cd /build && git clone https://github.com/ogham/dog.git && cd dog && git checkout ${dog_commit}
 RUN cd /build/dog && cargo build --release
+RUN pandoc /build/dog/man/dog.1.md -s -t man | gzip > /build/dog/man/dog.1.gz
 
 ARG gping_tag
 RUN cd /build && git clone --depth 1 --branch ${gping_tag} https://github.com/orf/gping.git
@@ -120,6 +121,7 @@ ENV LD_LIBRARY_PATH /usr/local/lib/
 COPY --from=golang-builder /build/ttyd /usr/bin/
 
 COPY --from=rust-builder /build/dog/target/release/dog /bin/
+COPY --from=rust-builder /build/dog/man/dog.1.gz /usr/share/man/man1/
 COPY --from=rust-builder /build/gping/target/release/gping /bin/
 COPY --from=rust-builder /build/oha/target/release/oha /bin/
 
