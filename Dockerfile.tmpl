@@ -2,6 +2,7 @@ ARG lnd_version=v0.14.1-beta
 
 ARG balanceofsatoshis_tag=v11.32.0
 ARG charge_lnd_tag=v0.2.8
+ARG csview_tag=v1.0.0-rc.1
 ARG dog_commit=721440b
 ARG gping_tag=gping-v1.2.7
 ARG igniter_tag=1.0.0
@@ -56,13 +57,17 @@ RUN cd /build/ttyd && mkdir build && cmake . && make
 
 # VERSION_SPECIFIC_BUILD_STEPS
 
-FROM rust:1-slim-${DEBIAN_VERSION} AS rust-builder
+FROM rustlang/rust:nightly-${DEBIAN_VERSION}-slim AS rust-builder
 
 RUN apt-get update \
     && apt-get install -y git gzip libssl-dev pandoc pkg-config \
     && apt clean all
 
 WORKDIR /build
+
+ARG csview_tag
+RUN cd /build && git clone --depth 1 --branch ${csview_tag} https://github.com/wfxr/csview.git
+RUN cd /build/csview && cargo build --release
 
 ARG dog_commit
 RUN cd /build && git clone https://github.com/ogham/dog.git && cd dog && git checkout ${dog_commit}
@@ -126,6 +131,7 @@ COPY --from=golang-builder /usr/local/lib/libwebsockets-evlib_uv.so /usr/local/l
 ENV LD_LIBRARY_PATH /usr/local/lib/
 COPY --from=golang-builder /build/ttyd /usr/bin/
 
+COPY --from=rust-builder /build/csview/target/release/csview /bin/
 COPY --from=rust-builder /build/dog/target/release/dog /bin/
 COPY --from=rust-builder /build/dog/man/dog.1.gz /usr/share/man/man1/
 COPY --from=rust-builder /build/gping/target/release/gping /bin/
