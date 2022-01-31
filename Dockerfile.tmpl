@@ -9,6 +9,7 @@ ARG lntop_tag=v0.3.0
 ARG oha_tag=v0.5.0
 ARG perfectly_balanced_tag=v0.0.10
 ARG rebalance_lnd_tag=v2.2
+ARG sc_im_tag=v0.8.2
 ARG suez_commit=335d430
 
 ARG lws_tag=v4.3.0
@@ -21,9 +22,7 @@ ARG arch
 WORKDIR /build
 
 RUN apt-get update \
-    && apt-get install -y curl git gnupg \
-    # for building ttyd
-    && apt-get install -y build-essential cmake libjson-c-dev libwebsockets-dev \
+    && apt-get install -y bison build-essential cmake curl git gnupg libjson-c-dev libncurses-dev libwebsockets-dev pkg-config \
     && apt clean all
 
 # getting lnd
@@ -41,7 +40,12 @@ ENV GOARCH=${arch}
 ENV GOOS=linux
 RUN cd /build/lntop && mkdir bin && go build -o bin/lntop cmd/lntop/main.go
 
-# building lws & ttyd
+# building sc-im
+ARG sc_im_tag
+RUN cd /build && git clone --depth 1 --branch ${sc_im_tag} https://github.com/andmarti1424/sc-im.git
+RUN cd /build/sc-im/src && make
+
+# building ttyd (+lws)
 ARG lws_tag
 RUN cd /build && git clone --depth 1 --branch ${lws_tag} https://libwebsockets.org/repo/libwebsockets
 RUN cd /build/libwebsockets && mkdir build && cd build && cmake .. -DLWS_WITH_LIBUV=ON && make && make install
@@ -113,6 +117,9 @@ RUN pip3 install -r /suez/requirements.txt
 
 COPY --from=golang-builder /lnd/lncli /bin/
 COPY --from=golang-builder /build/lntop/bin/lntop /bin/
+COPY --from=golang-builder /build/sc-im/src/sc-im /usr/bin/
+COPY --from=golang-builder /build/sc-im/src/scopen /usr/bin/
+COPY --from=golang-builder /build/sc-im/src/sc-im.1 /usr/share/man/man1/
 COPY --from=golang-builder /usr/local/lib/libwebsockets.so /usr/local/lib/
 COPY --from=golang-builder /usr/local/lib/libwebsockets.so.19 /usr/local/lib/
 COPY --from=golang-builder /usr/local/lib/libwebsockets-evlib_uv.so /usr/local/lib/
