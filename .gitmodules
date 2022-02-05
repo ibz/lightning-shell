@@ -1,0 +1,12 @@
+[submodule "apps/csview"]
+	path = apps/csview
+	url = git://github.com/wfxr/csview.git
+[submodule "apps/dog"]
+	path = apps/dog
+	url = git://github.com/ogham/dog.git
+[submodule "apps/gping"]
+	path = apps/gping
+	url = git://github.com/orf/gping.git
+[submodule "apps/oha"]
+	path = apps/oha
+	url = git://github.com/hatoo/oha.git

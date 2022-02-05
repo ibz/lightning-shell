@@ -65,22 +65,20 @@ RUN apt-get update \
 
 WORKDIR /build
 
+COPY ./apps /build/apps
+
 ARG csview_tag
-RUN cd /build && git clone --depth 1 --branch ${csview_tag} https://github.com/wfxr/csview.git
-RUN cd /build/csview && cargo build --release
+RUN cd /build/apps/csview && git checkout ${csview_tag} && cargo build --release
 
 ARG dog_commit
-RUN cd /build && git clone https://github.com/ogham/dog.git && cd dog && git checkout ${dog_commit}
-RUN cd /build/dog && cargo build --release
-RUN pandoc /build/dog/man/dog.1.md -s -t man | gzip > /build/dog/man/dog.1.gz
+RUN cd /build/apps/dog && git checkout ${dog_commit} && cargo build --release
+RUN pandoc /build/apps/dog/man/dog.1.md -s -t man | gzip > /build/apps/dog/man/dog.1.gz
 
 ARG gping_tag
-RUN cd /build && git clone --depth 1 --branch ${gping_tag} https://github.com/orf/gping.git
-RUN cd /build/gping && cargo build --release
+RUN cd /build/apps/gping && git checkout ${gping_tag} && cargo build --release
 
 ARG oha_tag
-RUN cd /build && git clone --depth 1 --branch ${oha_tag} https://github.com/hatoo/oha.git
-RUN cd /build/oha && cargo build --release
+RUN cd /build/apps/oha && git checkout ${oha_tag} && cargo build --release
 
 FROM node:16-${DEBIAN_VERSION}-slim
 
@@ -131,11 +129,11 @@ COPY --from=golang-builder /usr/local/lib/libwebsockets-evlib_uv.so /usr/local/l
 ENV LD_LIBRARY_PATH /usr/local/lib/
 COPY --from=golang-builder /build/ttyd /usr/bin/
 
-COPY --from=rust-builder /build/csview/target/release/csview /bin/
-COPY --from=rust-builder /build/dog/target/release/dog /bin/
-COPY --from=rust-builder /build/dog/man/dog.1.gz /usr/share/man/man1/
-COPY --from=rust-builder /build/gping/target/release/gping /bin/
-COPY --from=rust-builder /build/oha/target/release/oha /bin/
+COPY --from=rust-builder /build/apps/csview/target/release/csview /bin/
+COPY --from=rust-builder /build/apps/dog/target/release/dog /bin/
+COPY --from=rust-builder /build/apps/dog/man/dog.1.gz /usr/share/man/man1/
+COPY --from=rust-builder /build/apps/gping/target/release/gping /bin/
+COPY --from=rust-builder /build/apps/oha/target/release/oha /bin/
 
 # VERSION_SPECIFIC_COPY_STEPS
 
