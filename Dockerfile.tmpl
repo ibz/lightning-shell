@@ -2,7 +2,6 @@ ARG lnd_version=v0.14.1-beta
 
 ARG balanceofsatoshis_tag=v11.44.0
 ARG igniter_tag=1.0.0
-ARG lntop_tag=v0.3.0
 ARG perfectly_balanced_tag=v0.0.10
 ARG sc_im_tag=v0.8.2
 
@@ -13,11 +12,13 @@ FROM golang:1.17-${DEBIAN_VERSION} AS golang-builder
 
 ARG arch
 
-WORKDIR /build
-
 RUN apt-get update \
     && apt-get install -y bison build-essential cmake curl git gnupg libjson-c-dev libncurses-dev libwebsockets-dev pkg-config \
     && apt clean all
+
+WORKDIR /build
+
+COPY . /build
 
 # getting lnd
 ARG lnd_version
@@ -27,12 +28,9 @@ RUN curl -sSL -o /build/manifest-${lnd_version}.txt https://github.com/lightning
 RUN curl https://raw.githubusercontent.com/lightningnetwork/lnd/master/scripts/keys/guggero.asc | gpg --import
 RUN cd /build && gpg --verify manifest-guggero-${lnd_version}.sig manifest-${lnd_version}.txt && tar xzf lnd-linux-${arch}-${lnd_version}.tar.gz && mv lnd-linux-${arch}-${lnd_version} /lnd
 
-# building lntop
-ARG lntop_tag
-RUN cd /build && git clone --depth 1 --branch ${lntop_tag} https://github.com/edouardparis/lntop.git
 ENV GOARCH=${arch}
 ENV GOOS=linux
-RUN cd /build/lntop && mkdir bin && go build -o bin/lntop cmd/lntop/main.go
+RUN cd /build/apps/lntop && mkdir bin && go build -o bin/lntop cmd/lntop/main.go
 
 # building sc-im
 ARG sc_im_tag
@@ -100,7 +98,7 @@ RUN curl -sSL https://install.python-poetry.org | python3 -
 RUN cd /build/apps/suez && /root/.local/bin/poetry export -f requirements.txt --output requirements.txt --without-hashes && pip3 install -r requirements.txt
 
 COPY --from=golang-builder /lnd/lncli /bin/
-COPY --from=golang-builder /build/lntop/bin/lntop /bin/
+COPY --from=golang-builder /build/apps/lntop/bin/lntop /bin/
 COPY --from=golang-builder /build/sc-im/src/sc-im /usr/bin/
 COPY --from=golang-builder /build/sc-im/src/scopen /usr/bin/
 COPY --from=golang-builder /build/sc-im/src/sc-im.1 /usr/share/man/man1/

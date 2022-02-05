@@ -19,3 +19,6 @@
 [submodule "apps/suez"]
 	path = apps/suez
 	url = git://github.com/prusnak/suez.git
+[submodule "apps/lntop"]
+	path = apps/lntop
+	url = git://github.com/edouardparis/lntop.git
