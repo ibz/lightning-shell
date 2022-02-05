@@ -65,7 +65,7 @@ RUN apt-get update \
 
 WORKDIR /build
 
-COPY ./apps /build/apps
+COPY . /build
 
 ARG csview_tag
 RUN cd /build/apps/csview && git checkout ${csview_tag} && cargo build --release
