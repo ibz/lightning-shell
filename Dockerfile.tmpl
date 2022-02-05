@@ -1,8 +1,6 @@
 ARG lnd_version=v0.14.1-beta
 
 ARG balanceofsatoshis_tag=v11.44.0
-ARG igniter_tag=1.0.0
-ARG perfectly_balanced_tag=v0.0.10
 ARG sc_im_tag=v0.8.2
 
 ARG lws_tag=v4.3.0
@@ -84,13 +82,9 @@ COPY . /build
 
 RUN cd /build/apps/charge-lnd && <INSTALL_MAYBE_NO_GRPC> && python3 setup.py install
 
-ARG igniter_tag
-RUN git clone --depth 1 --branch ${igniter_tag} https://github.com/RooSoft/igniter.git /igniter
-RUN chmod +x /igniter/igniter.sh
+RUN cd /build/apps/igniter && chmod +x igniter.sh
 
-ARG perfectly_balanced_tag
-RUN git clone --depth 1 --branch ${perfectly_balanced_tag} https://github.com/cuaritas/perfectly-balanced.git /perfectly-balanced
-RUN chmod +x /perfectly-balanced/perfectlybalanced.sh
+RUN cd /build/apps/perfectly-balanced && chmod +x perfectlybalanced.sh
 
 RUN cd /build/apps/rebalance-lnd && <INSTALL_MAYBE_NO_GRPC>
 

@@ -18,4 +18,4 @@ if [ ! -f ~/igniter.conf ]; then
         ln -s /data/igniter.conf ~/
 fi
 
-/igniter/igniter.sh $@
+/build/apps/igniter/igniter.sh $@

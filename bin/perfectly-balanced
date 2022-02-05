@@ -10,4 +10,4 @@ if [ "$1" == 'url' ]; then
         exit 0
 fi
 
-LND_DIR=/lnd REBALANCE_LND_FILEPATH=/rebalance-lnd/rebalance.py /perfectly-balanced/perfectlybalanced.sh $@
+LND_DIR=/lnd REBALANCE_LND_FILEPATH=/build/apps/rebalance-lnd/rebalance.py /build/apps/perfectly-balanced/perfectlybalanced.sh $@

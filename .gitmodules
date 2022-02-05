@@ -22,3 +22,9 @@
 [submodule "apps/lntop"]
 	path = apps/lntop
 	url = git://github.com/edouardparis/lntop.git
+[submodule "apps/igniter"]
+	path = apps/igniter
+	url = git://github.com/RooSoft/igniter.git
+[submodule "apps/perfectly-balanced"]
+	path = apps/perfectly-balanced
+	url = git://github.com/cuaritas/perfectly-balanced.git
