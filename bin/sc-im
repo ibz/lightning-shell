@@ -10,4 +10,4 @@ if [ "$1" == 'url' ]; then
         exit 0
 fi
 
-/bin/csview $@
+/bin/sc-im $@
