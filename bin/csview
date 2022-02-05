@@ -1,0 +1,13 @@
+#!/bin/bash
+
+if [ "$1" == 'describe' ]; then
+        echo 'A high performance CSV viewer.'
+        exit 0
+fi
+
+if [ "$1" == 'url' ]; then
+        echo "https://github.com/wfxr/csview"
+        exit 0
+fi
+
+/bin/csview $@
