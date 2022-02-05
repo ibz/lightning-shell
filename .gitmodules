@@ -10,3 +10,12 @@
 [submodule "apps/oha"]
 	path = apps/oha
 	url = git://github.com/hatoo/oha.git
+[submodule "apps/charge-lnd"]
+	path = apps/charge-lnd
+	url = git://github.com/accumulator/charge-lnd.git
+[submodule "apps/rebalance-lnd"]
+	path = apps/rebalance-lnd
+	url = git://github.com/C-Otto/rebalance-lnd.git
+[submodule "apps/suez"]
+	path = apps/suez
+	url = git://github.com/prusnak/suez.git

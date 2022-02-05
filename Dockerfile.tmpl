@@ -1,13 +1,10 @@
 ARG lnd_version=v0.14.1-beta
 
 ARG balanceofsatoshis_tag=v11.44.0
-ARG charge_lnd_tag=v0.2.8
 ARG igniter_tag=1.0.0
 ARG lntop_tag=v0.3.0
 ARG perfectly_balanced_tag=v0.0.10
-ARG rebalance_lnd_tag=v2.2
 ARG sc_im_tag=v0.8.2
-ARG suez_commit=335d430
 
 ARG lws_tag=v4.3.0
 ARG ttyd_commit=45f7b4e
@@ -85,11 +82,9 @@ RUN apt update \
     && apt clean all \
     && rm -rf /var/lib/apt/lists/*
 
-ARG charge_lnd_tag
-RUN git clone --depth 1 --branch ${charge_lnd_tag} https://github.com/accumulator/charge-lnd.git /charge-lnd
-RUN cd /charge-lnd && <INSTALL_MAYBE_NO_GRPC>
-RUN cd /charge-lnd && python3 setup.py install
-RUN rm -rf /charge-lnd
+COPY . /build
+
+RUN cd /build/apps/charge-lnd && <INSTALL_MAYBE_NO_GRPC> && python3 setup.py install
 
 ARG igniter_tag
 RUN git clone --depth 1 --branch ${igniter_tag} https://github.com/RooSoft/igniter.git /igniter
@@ -99,16 +94,10 @@ ARG perfectly_balanced_tag
 RUN git clone --depth 1 --branch ${perfectly_balanced_tag} https://github.com/cuaritas/perfectly-balanced.git /perfectly-balanced
 RUN chmod +x /perfectly-balanced/perfectlybalanced.sh
 
-ARG rebalance_lnd_tag
-RUN git clone --depth 1 --branch ${rebalance_lnd_tag} https://github.com/C-Otto/rebalance-lnd.git /rebalance-lnd
-RUN cd /rebalance-lnd && <INSTALL_MAYBE_NO_GRPC>
+RUN cd /build/apps/rebalance-lnd && <INSTALL_MAYBE_NO_GRPC>
 
-# extracting and installing suez requirements
-ARG suez_commit
 RUN curl -sSL https://install.python-poetry.org | python3 -
-RUN git clone https://github.com/prusnak/suez.git /suez && cd /suez && git checkout ${suez_commit}
-RUN cd /suez && /root/.local/bin/poetry export -f requirements.txt --output requirements.txt --without-hashes
-RUN pip3 install -r /suez/requirements.txt
+RUN cd /build/apps/suez && /root/.local/bin/poetry export -f requirements.txt --output requirements.txt --without-hashes && pip3 install -r requirements.txt
 
 COPY --from=golang-builder /lnd/lncli /bin/
 COPY --from=golang-builder /build/lntop/bin/lntop /bin/

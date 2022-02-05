@@ -10,4 +10,4 @@ if [ "$1" == 'url' ]; then
         exit 0
 fi
 
-/rebalance-lnd/rebalance.py --grpc=${LND_IP}:${LND_GRPC_PORT} --lnddir=/lnd $@
+/build/apps/rebalance-lnd/rebalance.py --grpc=${LND_IP}:${LND_GRPC_PORT} --lnddir=/lnd $@

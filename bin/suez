@@ -10,4 +10,4 @@ if [ "$1" == 'url' ]; then
         exit 0
 fi
 
-/suez/suez --client-args=--rpcserver=${LND_IP}:${LND_GRPC_PORT} --client-args=--lnddir=/lnd $@
+/build/apps/suez/suez --client-args=--rpcserver=${LND_IP}:${LND_GRPC_PORT} --client-args=--lnddir=/lnd $@
