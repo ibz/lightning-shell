@@ -2,12 +2,8 @@ ARG lnd_version=v0.14.1-beta
 
 ARG balanceofsatoshis_tag=v11.44.0
 ARG charge_lnd_tag=v0.2.8
-ARG csview_tag=v1.0.0-rc.1
-ARG dog_commit=721440b
-ARG gping_tag=gping-v1.2.7
 ARG igniter_tag=1.0.0
 ARG lntop_tag=v0.3.0
-ARG oha_tag=v0.5.0
 ARG perfectly_balanced_tag=v0.0.10
 ARG rebalance_lnd_tag=v2.2
 ARG sc_im_tag=v0.8.2
@@ -67,18 +63,14 @@ WORKDIR /build
 
 COPY . /build
 
-ARG csview_tag
-RUN cd /build/apps/csview && git checkout ${csview_tag} && cargo build --release
+RUN cd /build/apps/csview && cargo build --release
 
-ARG dog_commit
-RUN cd /build/apps/dog && git checkout ${dog_commit} && cargo build --release
+RUN cd /build/apps/dog && cargo build --release
 RUN pandoc /build/apps/dog/man/dog.1.md -s -t man | gzip > /build/apps/dog/man/dog.1.gz
 
-ARG gping_tag
-RUN cd /build/apps/gping && git checkout ${gping_tag} && cargo build --release
+RUN cd /build/apps/gping && cargo build --release
 
-ARG oha_tag
-RUN cd /build/apps/oha && git checkout ${oha_tag} && cargo build --release
+RUN cd /build/apps/oha && cargo build --release
 
 FROM node:16-${DEBIAN_VERSION}-slim
 
