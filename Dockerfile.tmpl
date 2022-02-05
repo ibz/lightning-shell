@@ -1,10 +1,8 @@
 ARG lnd_version=v0.14.1-beta
 
 ARG balanceofsatoshis_tag=v11.44.0
-ARG sc_im_tag=v0.8.2
 
 ARG lws_tag=v4.3.0
-ARG ttyd_commit=45f7b4e
 
 FROM golang:1.17-${DEBIAN_VERSION} AS golang-builder
 
@@ -30,19 +28,14 @@ ENV GOARCH=${arch}
 ENV GOOS=linux
 RUN cd /build/apps/lntop && mkdir bin && go build -o bin/lntop cmd/lntop/main.go
 
-# building sc-im
-ARG sc_im_tag
-RUN cd /build && git clone --depth 1 --branch ${sc_im_tag} https://github.com/andmarti1424/sc-im.git
-RUN cd /build/sc-im/src && make
+RUN cd /build/apps/sc-im/src && make
 
 # building ttyd (+lws)
 ARG lws_tag
 RUN cd /build && git clone --depth 1 --branch ${lws_tag} https://libwebsockets.org/repo/libwebsockets
 RUN cd /build/libwebsockets && mkdir build && cd build && cmake .. -DLWS_WITH_LIBUV=ON && make && make install
 
-ARG ttyd_commit
-RUN cd /build && git clone https://github.com/tsl0922/ttyd.git && cd ttyd && git checkout ${ttyd_commit}
-RUN cd /build/ttyd && mkdir build && cmake . && make
+RUN cd /build/apps/ttyd && mkdir build && cmake . && make
 
 # VERSION_SPECIFIC_BUILD_STEPS
 
@@ -93,14 +86,14 @@ RUN cd /build/apps/suez && /root/.local/bin/poetry export -f requirements.txt --
 
 COPY --from=golang-builder /lnd/lncli /bin/
 COPY --from=golang-builder /build/apps/lntop/bin/lntop /bin/
-COPY --from=golang-builder /build/sc-im/src/sc-im /usr/bin/
-COPY --from=golang-builder /build/sc-im/src/scopen /usr/bin/
-COPY --from=golang-builder /build/sc-im/src/sc-im.1 /usr/share/man/man1/
+COPY --from=golang-builder /build/apps/sc-im/src/sc-im /usr/bin/
+COPY --from=golang-builder /build/apps/sc-im/src/scopen /usr/bin/
+COPY --from=golang-builder /build/apps/sc-im/src/sc-im.1 /usr/share/man/man1/
 COPY --from=golang-builder /usr/local/lib/libwebsockets.so /usr/local/lib/
 COPY --from=golang-builder /usr/local/lib/libwebsockets.so.19 /usr/local/lib/
 COPY --from=golang-builder /usr/local/lib/libwebsockets-evlib_uv.so /usr/local/lib/
 ENV LD_LIBRARY_PATH /usr/local/lib/
-COPY --from=golang-builder /build/ttyd /usr/bin/
+COPY --from=golang-builder /build/apps/ttyd/build/ttyd /usr/bin/
 
 COPY --from=rust-builder /build/apps/csview/target/release/csview /bin/
 COPY --from=rust-builder /build/apps/dog/target/release/dog /bin/
