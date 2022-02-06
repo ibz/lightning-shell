@@ -63,7 +63,7 @@ RUN cd /build/apps/oha && cargo build --release
 
 RUN cd /build/apps/rates && cargo build --release
 
-RUN cd /build/apps/tickrs && cargo build --release
+#RUN cd /build/apps/tickrs && cargo build --release
 
 FROM node:16-${DEBIAN_VERSION}-slim
 
@@ -116,7 +116,7 @@ COPY --from=rust-builder /build/apps/dog/man/dog.1.gz /usr/share/man/man1/
 COPY --from=rust-builder /build/apps/gping/target/release/gping /usr/local/bin/
 COPY --from=rust-builder /build/apps/oha/target/release/oha /usr/local/bin/
 COPY --from=rust-builder /build/apps/rates/target/release/rates /usr/local/bin/
-COPY --from=rust-builder /build/apps/tickrs/target/release/tickrs /usr/local/bin/
+#COPY --from=rust-builder /build/apps/tickrs/target/release/tickrs /usr/local/bin/
 
 # VERSION_SPECIFIC_COPY_STEPS
 
