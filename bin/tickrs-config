@@ -1,0 +1,9 @@
+#!/bin/bash
+
+if [ ! -f /home/lnshell/.config/tickrs/config.yml ]; then
+    mkdir -p /home/lnshell/.config/tickrs
+    cat << EOF >> /home/lnshell/.config/tickrs/config.yml
+symbols:
+   - BTC-USD
+EOF
+fi
