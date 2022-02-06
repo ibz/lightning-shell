@@ -70,7 +70,7 @@ RUN echo "deb http://deb.debian.org/debian ${DEBIAN_VERSION}-backports main" | t
 
 RUN apt update \
     && apt upgrade -y \
-    && apt install -y --no-install-recommends bc ca-certificates curl git iputils-ping jq libc6 libcap2 libssl1.1 libuv1 links micro nano procps python3 python3-pip python3-venv python3-wheel screen sysstat tini tmux vim zlib1g <VERSION_SPECIFIC_DEPENDENCIES> \
+    && apt install -y --no-install-recommends bc ca-certificates curl git iputils-ping jq libc6 libcap2 libssl1.1 libuv1 links man micro nano procps python3 python3-pip python3-venv python3-wheel screen sysstat tini tmux vim zlib1g <VERSION_SPECIFIC_DEPENDENCIES> \
     && apt clean all \
     && rm -rf /var/lib/apt/lists/*
 
@@ -123,8 +123,9 @@ USER lnshell
 WORKDIR /home/lnshell
 
 ARG version
-RUN mkdir -p /home/lnshell/.local/bin
+RUN mkdir -p /home/lnshell/.local/bin /home/lnshell/.local/share
 COPY --chown=lnshell:lnshell install-apps.sh bin/* /home/lnshell/.local/bin/
+COPY --chown=lnshell:lnshell apps/apps.json /home/lnshell/.local/share
 RUN /bin/bash /home/lnshell/.local/bin/install-apps.sh
 RUN chmod +x /home/lnshell/.local/bin/*
 RUN echo "PATH=~/.local/bin:$PATH; export PATH" >> /home/lnshell/.bashrc

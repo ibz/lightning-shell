@@ -1,7 +1,8 @@
 #!/bin/bash
 
-while IFS=read -r line; do
+while IFS= read -r line; do
     FILENAME=/home/lnshell/.local/bin/`echo $line | cut -d " " -f1`
-    printf "#!/bin/bash" > $FILENAME
+    echo "#!/bin/bash" > $FILENAME
     echo $line | cut -d " " -f2- >> $FILENAME
-done <<< `jq -r '.apps[] | "\(.name) \(.run)"' /build/apps/apps.json`
+    chmod +x $FILENAME
+done <<< `jq -r '.apps[] | "\(.name) \(.run)"' /home/lnshell/.local/share/apps.json`

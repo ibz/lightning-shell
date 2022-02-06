@@ -1,12 +1,6 @@
 {
   "apps": [
   {
-    "name": "about",
-    "description": "Lightning Shell",
-    "url": "https://lightningshell.app",
-    "run": "about"
-  },
-  {
     "name": "bos",
     "description": "Balance of Satoshis - Commands for working with LND balances",
     "url": "https://github.com/alexbosworth/balanceofsatoshis",
