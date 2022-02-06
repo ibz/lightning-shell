@@ -1,0 +1,87 @@
+{
+  "apps": [
+  {
+    "name": "about",
+    "description": "Lightning Shell",
+    "url": "https://lightningshell.app",
+    "run": "about"
+  },
+  {
+    "name": "bos",
+    "description": "Balance of Satoshis - Commands for working with LND balances",
+    "url": "https://github.com/alexbosworth/balanceofsatoshis",
+    "run": "bos-config && /usr/local/bin/bos $@ --node=mainnode"
+  },
+  {
+    "name": "charge-lnd",
+    "description": "A simple policy based fee manager for LND",
+    "url": "https://github.com/accumulator/charge-lnd",
+    "run": "/usr/local/bin/charge-lnd --grpc=${LND_IP}:${LND_GRPC_PORT} --lnddir=/lnd $@"
+  },
+  {
+    "name": "csview",
+    "description": "A high performance CSV viewer",
+    "url": "https://github.com/wfxr/csview",
+    "run": "/bin/csview $@"
+  },
+  {
+    "name": "dog",
+    "description": "A command-line DNS client",
+    "url": "https://github.com/ogham/dog",
+    "run": "/bin/dog $@"
+  },
+  {
+    "name": "gping",
+    "description": "Ping, but with a graph",
+    "url": "https://github.com/orf/gping",
+    "run": "/bin/gping $@"
+  },
+  {
+    "name": "igniter",
+    "description": "Circular rebalancing by sending a payment back to yourself using a specific route",
+    "url": "https://github.com/RooSoft/igniter",
+    "run": "igniter-config && /opt/igniter/igniter.sh $@"
+  },
+  {
+    "name": "lncli",
+    "description": "LND's command line interface",
+    "url": "https://github.com/lightningnetwork/lnd",
+    "run": "/bin/lncli --rpcserver=${LND_IP}:${LND_GRPC_PORT} --lnddir=/lnd $@"
+  },
+  {
+    "name": "lntop",
+    "description": "LN terminal dashboard",
+    "url": "https://github.com/edouardparis/lntop",
+    "run": "LND_ADDRESS=\"//${LND_IP}:${LND_GRPC_PORT}\" CERT_PATH=/lnd/tls.cert MACAROON_PATH=/lnd/data/chain/bitcoin/${BITCOIN_NETWORK:-mainnet}/readonly.macaroon /bin/lntop $@"
+  },
+  {
+    "name": "oha",
+    "description": "HTTP load generator",
+    "url": "https://github.com/hatoo/oha",
+    "run": "/bin/oha $@"
+  },
+  {
+    "name": "perfectly-balanced",
+    "description": "Script to make your LND node perfectly balanced as everything in life should be",
+    "url": "https://github.com/cuaritas/perfectly-balanced",
+    "run": "LND_DIR=/lnd REBALANCE_LND_FILEPATH=/opt/rebalance-lnd/rebalance.py /opt/perfectly-balanced/perfectlybalanced.sh $@"
+  },
+  {
+    "name": "rebalance-lnd",
+    "description": "A script that can be used to balance lightning channels of a LND node",
+    "url": "https://github.com/C-Otto/rebalance-lnd",
+    "run": "/opt/rebalance-lnd/rebalance.py --grpc=${LND_IP}:${LND_GRPC_PORT} --lnddir=/lnd $@"
+  },
+  {
+    "name": "sc-im",
+    "description": "Spreadsheet program for your terminal",
+    "url": "https://github.com/andmarti1424/sc-im",
+    "run": "/bin/sc-im $@"
+  },
+  {
+    "name": "suez",
+    "description": "Tool for pretty printing and optimizing Lightning Network channels",
+    "url": "https://github.com/prusnak/suez",
+    "run": "/opt/suez/suez --client-args=--rpcserver=${LND_IP}:${LND_GRPC_PORT} --client-args=--lnddir=/lnd $@"
+  }
+]}

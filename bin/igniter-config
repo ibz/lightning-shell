@@ -1,0 +1,9 @@
+#!/bin/bash
+
+if [ ! -f /data/igniter.conf ]; then
+    cp /opt/igniter/igniter.conf /data
+fi
+
+if [ ! -f ~/igniter.conf ]; then
+    ln -s /data/igniter.conf ~/
+fi

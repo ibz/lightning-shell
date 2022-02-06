@@ -1,13 +1,5 @@
 #!/bin/bash
 
-if [ "$1" == 'describe' ]; then
-        exit 0
-fi
-
-if [ "$1" == 'url' ]; then
-        exit 0
-fi
-
 version=`cat /home/lnshell/.lnshell-version`
 
 echo
@@ -33,9 +25,11 @@ echo
 echo "Read more at https://lightningshell.app"
 if [ ! "$version" == "main" ]; then
         echo
-        echo "See what's new at https://lightningshell.app/posts/${version}/"
+        echo "See what's new at https://lightningshell.app/history/#${version}"
 fi
 echo
 echo "Report issues at https://github.com/ibz/lightning-shell/issues"
 echo "Pull Requests are also very welcome!"
+echo
+echo "Use the /data directory to store files that you don't want to lose (configuration files, custom scripts, etc.)"
 echo

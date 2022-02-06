@@ -62,22 +62,31 @@ RUN echo "deb http://deb.debian.org/debian ${DEBIAN_VERSION}-backports main" | t
 
 RUN apt update \
     && apt upgrade -y \
-    && apt install -y --no-install-recommends bc ca-certificates curl git iputils-ping jq libc6 libcap2 libssl1.1 libuv1 links micro nano procps python3 python3-pip python3-venv python3-wheel screen sysstat tini tmux vim zlib1g <VERSION_SPECIFIC_DEPENDENCIES> \
+    && apt install -y --no-install-recommends bc ca-certificates curl git iputils-ping jq libc6 libcap2 libssl1.1 libuv1 links micro nano pandoc procps python3 python3-pip python3-venv python3-wheel screen sysstat tini tmux vim zlib1g <VERSION_SPECIFIC_DEPENDENCIES> \
     && apt clean all \
     && rm -rf /var/lib/apt/lists/*
+
+RUN curl -sSL https://install.python-poetry.org | python3 -
+
+RUN pip3 install jinja2-cli
+
+RUN mkdir -p /opt
 
 COPY . /build
 
 RUN cd /build/apps/charge-lnd && <INSTALL_MAYBE_NO_GRPC> && python3 setup.py install
 
-RUN cd /build/apps/igniter && chmod +x igniter.sh
+RUN cp -r /build/apps/igniter /opt/igniter && chmod +x /opt/igniter/igniter.sh
 
-RUN cd /build/apps/perfectly-balanced && chmod +x perfectlybalanced.sh
+RUN cp -r /build/apps/perfectly-balanced /opt/perfectly-balanced && chmod +x /opt/perfectly-balanced/perfectlybalanced.sh
 
-RUN cd /build/apps/rebalance-lnd && <INSTALL_MAYBE_NO_GRPC>
+RUN cd /build/apps/rebalance-lnd && <INSTALL_MAYBE_NO_GRPC> \
+ && cp -r /build/apps/rebalance-lnd /opt/rebalance-lnd
 
-RUN curl -sSL https://install.python-poetry.org | python3 -
-RUN cd /build/apps/suez && /root/.local/bin/poetry export -f requirements.txt --output requirements.txt --without-hashes && pip3 install -r requirements.txt
+RUN cd /build/apps/suez && /root/.local/bin/poetry export -f requirements.txt --output requirements.txt --without-hashes && pip3 install -r requirements.txt \
+ && cp -r /build/apps/suez /opt/suez
+
+RUN jinja2 /build/apps/apps.7.md /build/apps/apps.json | pandoc -s -t man | gzip > /usr/share/man/man7/apps.7.gz
 
 COPY --from=golang-builder /lnd/lncli /bin/
 COPY --from=golang-builder /build/apps/lntop/bin/lntop /bin/
@@ -108,8 +117,8 @@ WORKDIR /home/lnshell
 
 ARG version
 RUN mkdir -p /home/lnshell/.local/bin
-COPY --chown=lnshell:lnshell bin/* /home/lnshell/.local/bin/
-RUN cd /home/lnshell/.local/bin/ && chmod +x *
+COPY bin/* /home/lnshell/.local/bin/
+RUN chmod +x /build/install-apps.sh && /build/install-apps.sh
 RUN echo "PATH=~/.local/bin:$PATH; export PATH" >> /home/lnshell/.bashrc
 RUN echo "cat /etc/motd" >> /home/lnshell/.bashrc
 RUN echo "${version}" > /home/lnshell/.lnshell-version
