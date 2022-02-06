@@ -22,19 +22,19 @@
     "name": "csview",
     "description": "A high performance CSV viewer",
     "url": "https://github.com/wfxr/csview",
-    "run": "/bin/csview $@"
+    "run": "/usr/local/bin/csview $@"
   },
   {
     "name": "dog",
     "description": "A command-line DNS client",
     "url": "https://github.com/ogham/dog",
-    "run": "/bin/dog $@"
+    "run": "/usr/local/bin/dog $@"
   },
   {
     "name": "gping",
     "description": "Ping, but with a graph",
     "url": "https://github.com/orf/gping",
-    "run": "/bin/gping $@"
+    "run": "/usr/local/bin/gping $@"
   },
   {
     "name": "igniter",
@@ -46,19 +46,19 @@
     "name": "lncli",
     "description": "LND's command line interface",
     "url": "https://github.com/lightningnetwork/lnd",
-    "run": "/bin/lncli --rpcserver=${LND_IP}:${LND_GRPC_PORT} --lnddir=/lnd $@"
+    "run": "/usr/local/bin/lncli --rpcserver=${LND_IP}:${LND_GRPC_PORT} --lnddir=/lnd $@"
   },
   {
     "name": "lntop",
     "description": "LN terminal dashboard",
     "url": "https://github.com/edouardparis/lntop",
-    "run": "LND_ADDRESS=\"//${LND_IP}:${LND_GRPC_PORT}\" CERT_PATH=/lnd/tls.cert MACAROON_PATH=/lnd/data/chain/bitcoin/${BITCOIN_NETWORK:-mainnet}/readonly.macaroon /bin/lntop $@"
+    "run": "LND_ADDRESS=\"//${LND_IP}:${LND_GRPC_PORT}\" CERT_PATH=/lnd/tls.cert MACAROON_PATH=/lnd/data/chain/bitcoin/${BITCOIN_NETWORK:-mainnet}/readonly.macaroon /usr/local/bin/lntop $@"
   },
   {
     "name": "oha",
     "description": "HTTP load generator",
     "url": "https://github.com/hatoo/oha",
-    "run": "/bin/oha $@"
+    "run": "/usr/local/bin/oha $@"
   },
   {
     "name": "perfectly-balanced",
@@ -76,7 +76,7 @@
     "name": "sc-im",
     "description": "Spreadsheet program for your terminal",
     "url": "https://github.com/andmarti1424/sc-im",
-    "run": "/bin/sc-im $@"
+    "run": "/usr/local/bin/sc-im $@"
   },
   {
     "name": "suez",

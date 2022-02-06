@@ -7,8 +7,12 @@ FROM golang:1.17-${DEBIAN_VERSION} AS golang-builder
 ARG arch
 
 RUN apt-get update \
-    && apt-get install -y bison build-essential cmake curl git gnupg libjson-c-dev libncurses-dev libwebsockets-dev pkg-config \
+    && apt-get install -y bison build-essential cmake curl git gnupg libjson-c-dev libncurses-dev libwebsockets-dev pkg-config pandoc python3 python3-pip python3-venv \
     && apt clean all
+
+RUN curl -sSL https://install.python-poetry.org | python3 -
+
+RUN pip3 install jinja2-cli
 
 WORKDIR /build
 
@@ -31,6 +35,10 @@ RUN cd /build/apps/sc-im/src && make
 RUN cd /build/apps/libwebsockets && mkdir build && cd build && cmake .. -DLWS_WITH_LIBUV=ON && make && make install
 
 RUN cd /build/apps/ttyd && mkdir build && cd build && cmake .. && make
+
+RUN cd /build/apps/suez && /root/.local/bin/poetry export -f requirements.txt --output requirements.txt --without-hashes
+
+RUN jinja2 /build/apps/apps.7.md /build/apps/apps.json | pandoc -s -t man | gzip > /build/apps/apps.7.gz
 
 # VERSION_SPECIFIC_BUILD_STEPS
 
@@ -62,48 +70,47 @@ RUN echo "deb http://deb.debian.org/debian ${DEBIAN_VERSION}-backports main" | t
 
 RUN apt update \
     && apt upgrade -y \
-    && apt install -y --no-install-recommends bc ca-certificates curl git iputils-ping jq libc6 libcap2 libssl1.1 libuv1 links micro nano pandoc procps python3 python3-pip python3-venv python3-wheel screen sysstat tini tmux vim zlib1g <VERSION_SPECIFIC_DEPENDENCIES> \
+    && apt install -y --no-install-recommends bc ca-certificates curl git iputils-ping jq libc6 libcap2 libssl1.1 libuv1 links micro nano procps python3 python3-pip python3-venv python3-wheel screen sysstat tini tmux vim zlib1g <VERSION_SPECIFIC_DEPENDENCIES> \
     && apt clean all \
     && rm -rf /var/lib/apt/lists/*
 
-RUN curl -sSL https://install.python-poetry.org | python3 -
-
-RUN pip3 install jinja2-cli
-
 RUN mkdir -p /opt
 
-COPY . /build
+COPY --from=golang-builder /build/apps/charge-lnd/ /opt/charge-lnd/
+RUN cd /opt/charge-lnd && <INSTALL_MAYBE_NO_GRPC> && python3 setup.py install && rm -rf /opt/charge-lnd
 
-RUN cd /build/apps/charge-lnd && <INSTALL_MAYBE_NO_GRPC> && python3 setup.py install
+COPY --from=golang-builder /build/apps/igniter/ /opt/igniter/
+RUN chmod +x /opt/igniter/igniter.sh
 
-RUN cp -r /build/apps/igniter /opt/igniter && chmod +x /opt/igniter/igniter.sh
+COPY --from=golang-builder /build/apps/perfectly-balanced/ /opt/perfectly-balanced/
+RUN chmod +x /opt/perfectly-balanced/perfectlybalanced.sh
 
-RUN cp -r /build/apps/perfectly-balanced /opt/perfectly-balanced && chmod +x /opt/perfectly-balanced/perfectlybalanced.sh
+COPY --from=golang-builder /build/apps/rebalance-lnd/ /opt/rebalance-lnd/
+RUN cd /opt/rebalance-lnd && <INSTALL_MAYBE_NO_GRPC>
 
-RUN cd /build/apps/rebalance-lnd && <INSTALL_MAYBE_NO_GRPC> \
- && cp -r /build/apps/rebalance-lnd /opt/rebalance-lnd
+COPY --from=golang-builder /build/apps/suez/ /opt/suez/
+RUN cd /opt/suez && pip3 install -r requirements.txt
 
-RUN cd /build/apps/suez && /root/.local/bin/poetry export -f requirements.txt --output requirements.txt --without-hashes && pip3 install -r requirements.txt \
- && cp -r /build/apps/suez /opt/suez
+RUN mkdir -p /usr/local/share/man/man1 /usr/local/share/man/man7
 
-RUN jinja2 /build/apps/apps.7.md /build/apps/apps.json | pandoc -s -t man | gzip > /usr/share/man/man7/apps.7.gz
-
-COPY --from=golang-builder /lnd/lncli /bin/
-COPY --from=golang-builder /build/apps/lntop/bin/lntop /bin/
-COPY --from=golang-builder /build/apps/sc-im/src/sc-im /usr/bin/
-COPY --from=golang-builder /build/apps/sc-im/src/scopen /usr/bin/
-COPY --from=golang-builder /build/apps/sc-im/src/sc-im.1 /usr/share/man/man1/
+COPY --from=golang-builder /lnd/lncli /usr/local/bin/
+COPY --from=golang-builder /build/apps/lntop/bin/lntop /usr/local/bin/
+COPY --from=golang-builder /build/apps/sc-im/src/sc-im /usr/local/bin/
+COPY --from=golang-builder /build/apps/sc-im/src/scopen /usr/local/bin/
+COPY --from=golang-builder /build/apps/sc-im/src/sc-im.1 /usr/local/share/man/man1/
 COPY --from=golang-builder /usr/local/lib/libwebsockets.so /usr/local/lib/
 COPY --from=golang-builder /usr/local/lib/libwebsockets.so.19 /usr/local/lib/
 COPY --from=golang-builder /usr/local/lib/libwebsockets-evlib_uv.so /usr/local/lib/
 ENV LD_LIBRARY_PATH /usr/local/lib/
-COPY --from=golang-builder /build/apps/ttyd/build/ttyd /usr/bin/
+COPY --from=golang-builder /build/apps/ttyd/build/ttyd /usr/local/bin/
 
-COPY --from=rust-builder /build/apps/csview/target/release/csview /bin/
-COPY --from=rust-builder /build/apps/dog/target/release/dog /bin/
+COPY --from=golang-builder /build/apps/apps.7.gz /usr/share/man/man7/
+
+COPY --from=rust-builder /build/apps/csview/target/release/csview /usr/local/bin/
+COPY --from=rust-builder /build/apps/dog/target/release/dog /usr/local/bin/
 COPY --from=rust-builder /build/apps/dog/man/dog.1.gz /usr/share/man/man1/
-COPY --from=rust-builder /build/apps/gping/target/release/gping /bin/
-COPY --from=rust-builder /build/apps/oha/target/release/oha /bin/
+COPY --from=rust-builder /build/apps/gping/target/release/gping /usr/local/bin/
+COPY --from=rust-builder /build/apps/oha/target/release/oha /usr/local/bin/
 
 # VERSION_SPECIFIC_COPY_STEPS
 
@@ -117,8 +124,9 @@ WORKDIR /home/lnshell
 
 ARG version
 RUN mkdir -p /home/lnshell/.local/bin
-COPY bin/* /home/lnshell/.local/bin/
+COPY --chown=lnshell:lnshell bin/* /home/lnshell/.local/bin/
 RUN /build/install-apps.sh
+RUN chmod +x /home/lnshell/.local/bin/*
 RUN echo "PATH=~/.local/bin:$PATH; export PATH" >> /home/lnshell/.bashrc
 RUN echo "cat /etc/motd" >> /home/lnshell/.bashrc
 RUN echo "${version}" > /home/lnshell/.lnshell-version
@@ -129,4 +137,4 @@ ENV APP_PASSWORD=
 
 ENV USERNAME=umbrel
 
-ENTRYPOINT /usr/bin/tini /usr/bin/ttyd -- --credential ${USERNAME}:${APP_PASSWORD} bash
+ENTRYPOINT /usr/bin/tini /usr/local/bin/ttyd -- --credential ${USERNAME}:${APP_PASSWORD} bash
