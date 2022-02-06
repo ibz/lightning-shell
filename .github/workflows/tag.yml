@@ -26,6 +26,8 @@ jobs:
     steps:
       - name: Checkout project
         uses: actions/checkout@v2
+        with:
+          submodules: recursive
 
       - name: Set env variables
         run: |
@@ -68,8 +70,6 @@ jobs:
     steps:
       - name: Checkout project
         uses: actions/checkout@v2
-        with:
-          submodules: recursive
 
       - name: Set env variables
         run: |
