@@ -118,7 +118,7 @@ WORKDIR /home/lnshell
 ARG version
 RUN mkdir -p /home/lnshell/.local/bin
 COPY bin/* /home/lnshell/.local/bin/
-RUN chmod +x /build/install-apps.sh && /build/install-apps.sh
+RUN /build/install-apps.sh
 RUN echo "PATH=~/.local/bin:$PATH; export PATH" >> /home/lnshell/.bashrc
 RUN echo "cat /etc/motd" >> /home/lnshell/.bashrc
 RUN echo "${version}" > /home/lnshell/.lnshell-version
