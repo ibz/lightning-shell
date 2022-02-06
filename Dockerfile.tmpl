@@ -2,8 +2,6 @@ ARG lnd_version=v0.14.1-beta
 
 ARG balanceofsatoshis_tag=v11.44.0
 
-ARG lws_tag=v4.3.0
-
 FROM golang:1.17-${DEBIAN_VERSION} AS golang-builder
 
 ARG arch
@@ -30,10 +28,7 @@ RUN cd /build/apps/lntop && mkdir bin && go build -o bin/lntop cmd/lntop/main.go
 
 RUN cd /build/apps/sc-im/src && make
 
-# building ttyd (+lws)
-ARG lws_tag
-RUN cd /build && git clone --depth 1 --branch ${lws_tag} https://libwebsockets.org/repo/libwebsockets
-RUN cd /build/libwebsockets && mkdir build && cd build && cmake .. -DLWS_WITH_LIBUV=ON && make && make install
+RUN cd /build/apps/libwebsockets && mkdir build && cd build && cmake .. -DLWS_WITH_LIBUV=ON && make && make install
 
 RUN cd /build/apps/ttyd && mkdir build && cd build && cmake .. && make
 
