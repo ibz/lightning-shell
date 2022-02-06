@@ -35,7 +35,7 @@ ARG lws_tag
 RUN cd /build && git clone --depth 1 --branch ${lws_tag} https://libwebsockets.org/repo/libwebsockets
 RUN cd /build/libwebsockets && mkdir build && cd build && cmake .. -DLWS_WITH_LIBUV=ON && make && make install
 
-RUN cd /build/apps/ttyd && mkdir build && cmake . && make
+RUN cd /build/apps/ttyd && mkdir build && cd build && cmake .. && make
 
 # VERSION_SPECIFIC_BUILD_STEPS
 
