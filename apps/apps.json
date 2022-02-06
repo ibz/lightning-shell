@@ -61,6 +61,12 @@
     "run": "LND_DIR=/lnd REBALANCE_LND_FILEPATH=/opt/rebalance-lnd/rebalance.py /opt/perfectly-balanced/perfectlybalanced.sh $@"
   },
   {
+    "name": "rates",
+    "description": "Currency exchange rates in your terminal",
+    "url": "https://github.com/lunush/rates",
+    "run": "/usr/local/bin/rates $@"
+  },
+  {
     "name": "rebalance-lnd",
     "description": "A script that can be used to balance lightning channels of a LND node",
     "url": "https://github.com/C-Otto/rebalance-lnd",
@@ -77,5 +83,11 @@
     "description": "Tool for pretty printing and optimizing Lightning Network channels",
     "url": "https://github.com/prusnak/suez",
     "run": "/opt/suez/suez --client-args=--rpcserver=${LND_IP}:${LND_GRPC_PORT} --client-args=--lnddir=/lnd $@"
+  },
+  {
+    "name": "tickrs",
+    "description": "Realtime ticker data in your terminal",
+    "url": "https://github.com/tarkah/tickrs",
+    "run": "/usr/local/bin/tickrs $@"
   }
 ]}
