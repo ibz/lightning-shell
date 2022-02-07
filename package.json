@@ -1,6 +1,6 @@
 {
 	"dependencies": {
 		"balanceofsatoshis": "v11.44.0",
-        "ttyd": "./apps/ttyd/html"
+        "ttyd": "1.0.0"
 	}
 }
