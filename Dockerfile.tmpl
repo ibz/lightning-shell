@@ -86,7 +86,6 @@ RUN mkdir -p /opt /usr/local/share/man/man1 /usr/local/share/man/man7
 
 COPY --from=golang-builder /build/apps/charge-lnd/ /opt/charge-lnd/
 COPY --from=golang-builder /build/apps/igniter/ /opt/igniter/
-COPY --from=golang-builder /build/apps/indy/ /opt/indy/
 COPY --from=golang-builder /build/apps/perfectly-balanced/ /opt/perfectly-balanced/
 COPY --from=golang-builder /build/apps/rebalance-lnd/ /opt/rebalance-lnd/
 COPY --from=golang-builder /build/apps/suez/ /opt/suez/
@@ -97,8 +96,6 @@ RUN cd /opt/charge-lnd \
  && <INSTALL_MAYBE_NO_GRPC> \
  && python3 setup.py install \
  && rm -rf /opt/charge-lnd \
- && cd /opt/indy \
- && <INSTALL_MAYBE_NO_GRPC> \
  && cd /opt/rebalance-lnd \
  && <INSTALL_MAYBE_NO_GRPC> \
  && cd /opt/suez \
