@@ -43,3 +43,6 @@
 [submodule "apps/tickrs"]
 	path = apps/tickrs
 	url = git://github.com/tarkah/tickrs.git
+[submodule "apps/circuitbreaker"]
+	path = apps/circuitbreaker
+	url = git://github.com/lightningequipment/circuitbreaker.git
