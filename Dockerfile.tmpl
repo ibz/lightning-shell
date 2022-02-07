@@ -80,14 +80,11 @@ RUN apt update \
 
 RUN mkdir -p /opt /usr/local/share/man/man1 /usr/local/share/man/man7
 
-COPY \
-    --from=golang-builder \
-    /build/apps/charge-lnd/ \
-    /build/apps/igniter/ \
-    /build/apps/perfectly-balanced/ \
-    /build/apps/rebalance-lnd/ \
-    /build/apps/suez/ \
-    /opt/
+COPY --from=golang-builder /build/apps/charge-lnd/ /opt/charge-lnd/
+COPY --from=golang-builder /build/apps/igniter/ /opt/igniter/
+COPY --from=golang-builder /build/apps/perfectly-balanced/ /opt/perfectly-balanced/
+COPY --from=golang-builder /build/apps/rebalance-lnd/ /opt/rebalance-lnd/
+COPY --from=golang-builder /build/apps/suez/ /opt/suez/
 
 RUN chmod +x /opt/igniter/igniter.sh /opt/perfectly-balanced/perfectlybalanced.sh
 
