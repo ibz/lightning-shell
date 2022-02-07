@@ -80,20 +80,25 @@ RUN apt update \
 
 RUN mkdir -p /opt /usr/local/share/man/man1 /usr/local/share/man/man7
 
-COPY --from=golang-builder /build/apps/charge-lnd/ /opt/charge-lnd/
-RUN cd /opt/charge-lnd && <INSTALL_MAYBE_NO_GRPC> && python3 setup.py install && rm -rf /opt/charge-lnd
+COPY \
+    --from=golang-builder \
+    /build/apps/charge-lnd/ \
+    /build/apps/igniter/ \
+    /build/apps/perfectly-balanced/ \
+    /build/apps/rebalance-lnd/ \
+    /build/apps/suez/ \
+    /opt/
 
-COPY --from=golang-builder /build/apps/igniter/ /opt/igniter/
-RUN chmod +x /opt/igniter/igniter.sh
+RUN chmod +x /opt/igniter/igniter.sh /opt/perfectly-balanced/perfectlybalanced.sh
 
-COPY --from=golang-builder /build/apps/perfectly-balanced/ /opt/perfectly-balanced/
-RUN chmod +x /opt/perfectly-balanced/perfectlybalanced.sh
-
-COPY --from=golang-builder /build/apps/rebalance-lnd/ /opt/rebalance-lnd/
-RUN cd /opt/rebalance-lnd && <INSTALL_MAYBE_NO_GRPC>
-
-COPY --from=golang-builder /build/apps/suez/ /opt/suez/
-RUN cd /opt/suez && pip3 install -r requirements.txt
+RUN cd /opt/charge-lnd \
+ && <INSTALL_MAYBE_NO_GRPC> \
+ && python3 setup.py install \
+ && rm -rf /opt/charge-lnd \
+ && cd /opt/rebalance-lnd \
+ && <INSTALL_MAYBE_NO_GRPC> \
+ && cd /opt/suez \
+ && <INSTALL_MAYBE_NO_GRPC>
 
 COPY \
     --from=golang-builder \
@@ -113,6 +118,7 @@ ENV LD_LIBRARY_PATH /usr/local/lib/
 
 COPY --from=golang-builder /build/apps/sc-im/src/sc-im.1 /usr/local/share/man/man1/
 COPY --from=golang-builder /build/apps/apps.7.gz /usr/share/man/man7/
+COPY --from=rust-builder /build/apps/dog/man/dog.1.gz /usr/local/share/man/man1/
 
 COPY \
     --from=rust-builder \
@@ -123,7 +129,6 @@ COPY \
     /build/apps/rates/target/release/rates \
     /usr/local/bin/
 
-COPY --from=rust-builder /build/apps/dog/man/dog.1.gz /usr/share/man/man1/
 #COPY --from=rust-builder /build/apps/tickrs/target/release/tickrs /usr/local/bin/
 
 # VERSION_SPECIFIC_COPY_STEPS
@@ -140,9 +145,9 @@ ARG version
 RUN mkdir -p /home/lnshell/.local/bin /home/lnshell/.local/share
 COPY --chown=lnshell:lnshell install-apps.sh bin/* /home/lnshell/.local/bin/
 COPY --chown=lnshell:lnshell apps/apps.json /home/lnshell/.local/share
-RUN /bin/bash /home/lnshell/.local/bin/install-apps.sh
-RUN chmod +x /home/lnshell/.local/bin/*
-RUN echo "PATH=~/.local/bin:$PATH; export PATH" >> /home/lnshell/.bashrc \
+RUN /bin/bash /home/lnshell/.local/bin/install-apps.sh \
+ && chmod +x /home/lnshell/.local/bin/* \
+ && echo "PATH=~/.local/bin:$PATH; export PATH" >> /home/lnshell/.bashrc \
  && echo "cat /etc/motd" >> /home/lnshell/.bashrc \
  && echo "${version}" > /home/lnshell/.lnshell-version
 
