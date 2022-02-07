@@ -6,6 +6,9 @@ FROM golang:1.17-${DEBIAN_VERSION} AS golang-builder
 
 ARG arch
 
+ENV GOARCH=${arch}
+ENV GOOS=linux
+
 RUN apt-get update \
     && apt-get install -y bison build-essential cmake curl git gnupg libjson-c-dev libncurses-dev libwebsockets-dev pkg-config pandoc python3 python3-pip python3-venv \
     && apt clean all
@@ -18,7 +21,10 @@ WORKDIR /build
 
 COPY . /build
 
-# getting lnd
+RUN cd /build/apps/circuitbreaker && mkdir bin && go build -o bin/circuitbreaker
+
+RUN cd /build/apps/libwebsockets && mkdir build && cd build && cmake .. -DLWS_WITH_LIBUV=ON && make && make install
+
 ARG lnd_version
 RUN curl -sSL -o /build/lnd-linux-${arch}-${lnd_version}.tar.gz https://github.com/lightningnetwork/lnd/releases/download/${lnd_version}/lnd-linux-${arch}-${lnd_version}.tar.gz
 RUN curl -sSL -o /build/manifest-guggero-${lnd_version}.sig https://github.com/lightningnetwork/lnd/releases/download/${lnd_version}/manifest-guggero-${lnd_version}.sig
@@ -26,20 +32,15 @@ RUN curl -sSL -o /build/manifest-${lnd_version}.txt https://github.com/lightning
 RUN curl https://raw.githubusercontent.com/lightningnetwork/lnd/master/scripts/keys/guggero.asc | gpg --import
 RUN cd /build && gpg --verify manifest-guggero-${lnd_version}.sig manifest-${lnd_version}.txt && tar xzf lnd-linux-${arch}-${lnd_version}.tar.gz && mv lnd-linux-${arch}-${lnd_version} /lnd
 
-ENV GOARCH=${arch}
-ENV GOOS=linux
-
-RUN cd /build/apps/circuitbreaker && mkdir bin && go build -o bin/circuitbreaker
-
 RUN cd /build/apps/lntop && mkdir bin && go build -o bin/lntop cmd/lntop/main.go
 
 RUN cd /build/apps/sc-im/src && make
 
-RUN cd /build/apps/libwebsockets && mkdir build && cd build && cmake .. -DLWS_WITH_LIBUV=ON && make && make install
+RUN cd /build/apps/suez && /root/.local/bin/poetry export -f requirements.txt --output requirements.txt --without-hashes
 
 RUN cd /build/apps/ttyd && mkdir build && cd build && cmake .. && make
 
-RUN cd /build/apps/suez && /root/.local/bin/poetry export -f requirements.txt --output requirements.txt --without-hashes
+RUN cd /build/apps/whatsat && mkdir bin && go build -o bin/whatsat
 
 RUN jinja2 /build/apps/apps.7.md /build/apps/apps.json | pandoc -s -t man | gzip > /build/apps/apps.7.gz
 
@@ -102,12 +103,13 @@ RUN cd /opt/charge-lnd \
 
 COPY \
     --from=golang-builder \
-    /lnd/lncli \
     /build/apps/circuitbreaker/bin/circuitbreaker \
+    /lnd/lncli \
     /build/apps/lntop/bin/lntop \
     /build/apps/sc-im/src/sc-im \
     /build/apps/sc-im/src/scopen \
     /build/apps/ttyd/build/ttyd \
+    /build/apps/whatsat/bin/whatsat \
     /usr/local/bin/
 COPY \
     --from=golang-builder \
