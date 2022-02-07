@@ -78,7 +78,7 @@ RUN apt update \
     && apt clean all \
     && rm -rf /var/lib/apt/lists/*
 
-RUN mkdir -p /opt
+RUN mkdir -p /opt /usr/local/share/man/man1 /usr/local/share/man/man7
 
 COPY --from=golang-builder /build/apps/charge-lnd/ /opt/charge-lnd/
 RUN cd /opt/charge-lnd && <INSTALL_MAYBE_NO_GRPC> && python3 setup.py install && rm -rf /opt/charge-lnd
@@ -95,27 +95,35 @@ RUN cd /opt/rebalance-lnd && <INSTALL_MAYBE_NO_GRPC>
 COPY --from=golang-builder /build/apps/suez/ /opt/suez/
 RUN cd /opt/suez && pip3 install -r requirements.txt
 
-RUN mkdir -p /usr/local/share/man/man1 /usr/local/share/man/man7
-
-COPY --from=golang-builder /lnd/lncli /usr/local/bin/
-COPY --from=golang-builder /build/apps/lntop/bin/lntop /usr/local/bin/
-COPY --from=golang-builder /build/apps/sc-im/src/sc-im /usr/local/bin/
-COPY --from=golang-builder /build/apps/sc-im/src/scopen /usr/local/bin/
-COPY --from=golang-builder /build/apps/sc-im/src/sc-im.1 /usr/local/share/man/man1/
-COPY --from=golang-builder /usr/local/lib/libwebsockets.so /usr/local/lib/
-COPY --from=golang-builder /usr/local/lib/libwebsockets.so.19 /usr/local/lib/
-COPY --from=golang-builder /usr/local/lib/libwebsockets-evlib_uv.so /usr/local/lib/
+COPY \
+    --from=golang-builder \
+    /lnd/lncli \
+    /build/apps/lntop/bin/lntop \
+    /build/apps/sc-im/src/sc-im \
+    /build/apps/sc-im/src/scopen \
+    /build/apps/ttyd/build/ttyd \
+    /usr/local/bin/
+COPY \
+    --from=golang-builder \
+    /usr/local/lib/libwebsockets.so \
+    /usr/local/lib/libwebsockets.so.19 \
+    /usr/local/lib/libwebsockets-evlib_uv.so \
+    /usr/local/lib/
 ENV LD_LIBRARY_PATH /usr/local/lib/
-COPY --from=golang-builder /build/apps/ttyd/build/ttyd /usr/local/bin/
 
+COPY --from=golang-builder /build/apps/sc-im/src/sc-im.1 /usr/local/share/man/man1/
 COPY --from=golang-builder /build/apps/apps.7.gz /usr/share/man/man7/
 
-COPY --from=rust-builder /build/apps/csview/target/release/csview /usr/local/bin/
-COPY --from=rust-builder /build/apps/dog/target/release/dog /usr/local/bin/
+COPY \
+    --from=rust-builder \
+    /build/apps/csview/target/release/csview \
+    /build/apps/dog/target/release/dog \
+    /build/apps/gping/target/release/gping \
+    /build/apps/oha/target/release/oha \
+    /build/apps/rates/target/release/rates \
+    /usr/local/bin/
+
 COPY --from=rust-builder /build/apps/dog/man/dog.1.gz /usr/share/man/man1/
-COPY --from=rust-builder /build/apps/gping/target/release/gping /usr/local/bin/
-COPY --from=rust-builder /build/apps/oha/target/release/oha /usr/local/bin/
-COPY --from=rust-builder /build/apps/rates/target/release/rates /usr/local/bin/
 #COPY --from=rust-builder /build/apps/tickrs/target/release/tickrs /usr/local/bin/
 
 # VERSION_SPECIFIC_COPY_STEPS
@@ -134,9 +142,9 @@ COPY --chown=lnshell:lnshell install-apps.sh bin/* /home/lnshell/.local/bin/
 COPY --chown=lnshell:lnshell apps/apps.json /home/lnshell/.local/share
 RUN /bin/bash /home/lnshell/.local/bin/install-apps.sh
 RUN chmod +x /home/lnshell/.local/bin/*
-RUN echo "PATH=~/.local/bin:$PATH; export PATH" >> /home/lnshell/.bashrc
-RUN echo "cat /etc/motd" >> /home/lnshell/.bashrc
-RUN echo "${version}" > /home/lnshell/.lnshell-version
+RUN echo "PATH=~/.local/bin:$PATH; export PATH" >> /home/lnshell/.bashrc \
+ && echo "cat /etc/motd" >> /home/lnshell/.bashrc \
+ && echo "${version}" > /home/lnshell/.lnshell-version
 
 EXPOSE 7681
 
