@@ -17,7 +17,7 @@ jobs:
       matrix:
         architecture:
           - "arm64"
-#          - "amd64"
+          - "amd64"
         base:
           - "buster"
 #          - "bullseye"
