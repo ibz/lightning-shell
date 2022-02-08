@@ -61,12 +61,6 @@
     "run": "if [ $# -eq 0 ]; then LND_DIR=/lnd REBALANCE_LND_FILEPATH=/opt/rebalance-lnd/rebalance.py /opt/perfectly-balanced/perfectlybalanced.sh list; else LND_DIR=/lnd REBALANCE_LND_FILEPATH=/opt/rebalance-lnd/rebalance.py /opt/perfectly-balanced/perfectlybalanced.sh $@; fi"
   },
   {
-    "name": "rates",
-    "description": "Currency exchange rates in your terminal",
-    "url": "https://github.com/lunush/rates",
-    "run": "if [ $# -eq 0 ]; then /usr/local/bin/rates BTC USD; else /usr/local/bin/rates $@; fi"
-  },
-  {
     "name": "rebalance-lnd",
     "description": "A script that can be used to balance lightning channels of a LND node",
     "url": "https://github.com/C-Otto/rebalance-lnd",
