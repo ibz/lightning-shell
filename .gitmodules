@@ -37,9 +37,6 @@
 [submodule "apps/libwebsockets"]
 	path = apps/libwebsockets
 	url = https://libwebsockets.org/repo/libwebsockets
-[submodule "apps/rates"]
-	path = apps/rates
-	url = git://github.com/lunush/rates.git
 [submodule "apps/tickrs"]
 	path = apps/tickrs
 	url = git://github.com/tarkah/tickrs.git
