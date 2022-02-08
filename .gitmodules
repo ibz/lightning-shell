@@ -49,3 +49,6 @@
 [submodule "apps/whatsat"]
 	path = apps/whatsat
 	url = git://github.com/joostjager/whatsat.git
+[submodule "apps/weechat"]
+	path = apps/weechat
+	url = git://github.com/weechat/weechat.git

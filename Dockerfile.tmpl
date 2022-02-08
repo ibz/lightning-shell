@@ -10,7 +10,7 @@ ENV GOARCH=${arch}
 ENV GOOS=linux
 
 RUN apt-get update \
-    && apt-get install -y bison build-essential cmake curl git gnupg libjson-c-dev libncurses-dev libwebsockets-dev pkg-config pandoc python3 python3-pip python3-venv \
+    && apt-get install -y bison build-essential cmake curl git gnupg libaspell-dev libcurl4-gnutls-dev libgcrypt20-dev libgnutls28-dev libjson-c-dev libncursesw5-dev libwebsockets-dev pkg-config pandoc python3 python3-pip python3-venv zlib1g-dev \
     && apt clean all
 
 RUN curl -sSL https://install.python-poetry.org | python3 -
@@ -39,6 +39,8 @@ RUN cd /build/apps/sc-im/src && make
 RUN cd /build/apps/suez && /root/.local/bin/poetry export -f requirements.txt --output requirements.txt --without-hashes
 
 RUN cd /build/apps/ttyd && mkdir build && cd build && cmake .. && make
+
+RUN cd /build/apps/weechat && mkdir build && cd build && cmake .. -DENABLE_PHP=OFF -DENABLE_PERL=OFF -DENABLE_RUBY=OFF -DENABLE_TCL=OFF -DENABLE_LUA=OFF -DENABLE_GUILE=OFF && make && make install
 
 RUN cd /build/apps/whatsat && mkdir bin && go build -o bin/whatsat
 
@@ -82,8 +84,6 @@ RUN apt update \
     && apt clean all \
     && rm -rf /var/lib/apt/lists/*
 
-RUN mkdir -p /opt /usr/local/share/man/man1 /usr/local/share/man/man7
-
 COPY --from=golang-builder /build/apps/charge-lnd/ /opt/charge-lnd/
 COPY --from=golang-builder /build/apps/igniter/ /opt/igniter/
 COPY --from=golang-builder /build/apps/perfectly-balanced/ /opt/perfectly-balanced/
@@ -110,6 +110,7 @@ COPY \
     /build/apps/sc-im/src/scopen \
     /build/apps/ttyd/build/ttyd \
     /build/apps/whatsat/bin/whatsat \
+    /build/apps/weechat/build/src/gui/curses/normal/weechat \
     /usr/local/bin/
 COPY \
     --from=golang-builder \
@@ -117,6 +118,8 @@ COPY \
     /usr/local/lib/libwebsockets.so.19 \
     /usr/local/lib/libwebsockets-evlib_uv.so \
     /usr/local/lib/
+COPY --from=golang-builder /usr/local/lib/weechat/plugins/ /usr/local/lib/weechat/plugins/
+
 ENV LD_LIBRARY_PATH /usr/local/lib/
 
 COPY --from=golang-builder /build/apps/sc-im/src/sc-im.1 /usr/local/share/man/man1/
