@@ -128,6 +128,8 @@ COPY --from=rust-builder /build/apps/dog/man/dog.1.gz /usr/share/man/man1/
 # VERSION_SPECIFIC_COPY_STEPS
 
 COPY motd /etc/motd
+COPY start.sh /
+RUN chmod +x /start.sh
 
 # The node container already has an user called node, rename it
 RUN groupmod --new-name lnshell node && usermod --login lnshell --move-home --home /home/lnshell node
@@ -151,4 +153,4 @@ ENV APP_PASSWORD=
 
 ENV USERNAME=umbrel
 
-ENTRYPOINT /usr/bin/tini /usr/local/bin/ttyd -- --credential ${USERNAME}:${APP_PASSWORD} bash
+CMD [ "/start.sh" ]
