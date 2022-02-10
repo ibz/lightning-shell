@@ -31,5 +31,7 @@ echo
 echo "Report issues at https://github.com/ibz/lightning-shell/issues"
 echo "Pull Requests are also very welcome!"
 echo
+echo "Support me by sending sats or opening channels to 0264240e8bbbf6d2e052b92dbfef45487c1e7bc7d50c18db632eedfd8f4291fb84. Thank you!"
+echo
 echo "Use the /data directory to store files that you don't want to lose (configuration files, custom scripts, etc.)"
 echo
