@@ -7,6 +7,12 @@
     "run": "bos-config && /usr/local/bin/bos $@ --node=mainnode"
   },
   {
+    "name": "btc2fiat",
+    "description": "Bitcoin price expressed in fiat currency. As simple as that.",
+    "url": "https://github.com/ibz/btc2fiat",
+    "run": "btc2fiat $@"
+  },
+  {
     "name": "charge-lnd",
     "description": "A simple policy based fee manager for LND",
     "url": "https://github.com/accumulator/charge-lnd",
