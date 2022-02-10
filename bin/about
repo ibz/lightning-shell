@@ -22,17 +22,10 @@ SHELL
 echo
 echo "Lightning Shell ${version} by @ibz / https://ibz.me"
 echo
-echo "Read more at https://lightningshell.app"
-if [ ! "$version" == "main" ]; then
-        echo
-        echo "See what's new at https://lightningshell.app/history/#${version}"
-fi
-echo
 echo "Report issues at https://github.com/ibz/lightning-shell/issues"
 echo "Pull Requests are also very welcome!"
 echo
 echo "Support me by sending sats or opening channels to 0264240e8bbbf6d2e052b92dbfef45487c1e7bc7d50c18db632eedfd8f4291fb84"
-echo "Alternatively, you can send a tip on https://tipybit.com/ibz"
 echo "Also see my other app https://usocial.me"
 echo "Thank you!"
 echo

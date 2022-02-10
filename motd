@@ -1,8 +1,9 @@
 Welcome to the Lightning Shell! Read more at https://lightningshell.app
 
-Recently added apps: "btc2fiat" (show Bitcoin price), "sc-im" (spreadsheet), "csview" (view CSV files), "links" (web browser), "perfectly-balanced" (LND node balancing).
+Recently added apps: "btc2fiat" (show Bitcoin price), "sc-im" (spreadsheet), "csview" (view CSV files), "links" (web browser), "perfectly-balanced" (LND node balancing). See more in-depth changes at https://lightningshell.app/history/
 
-Use the /data directory to store files that you don't want to lose (configuration files, custom scripts, etc.)
+Use the /data directory to store files that you don't want to lose (configuration files, custom scripts, etc.)!
 
+Run "man apps" to read about all available apps. Some apps have their own manual page as well, see for example "man sc-im".
 Run "about" for more details about Lightning Shell.
-Run "man apps" to read about all available apps.
+
