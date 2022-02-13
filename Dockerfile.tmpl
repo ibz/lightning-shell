@@ -1,6 +1,6 @@
 ARG lnd_version=v0.14.1-beta
 
-ARG balanceofsatoshis_tag=v11.44.0
+ARG balanceofsatoshis_tag=v11.52.3
 
 FROM golang:1.17-${DEBIAN_VERSION} AS golang-builder
 
@@ -139,7 +139,7 @@ COPY \
 # VERSION_SPECIFIC_COPY_STEPS
 
 COPY motd /etc/motd
-COPY start.sh /
+COPY start.sh lsh_exec.sh /
 RUN chmod +x /start.sh
 
 # The node container already has an user called node, rename it
