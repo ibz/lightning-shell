@@ -49,7 +49,7 @@
     "category": "market",
     "description": "Bitcoin price expressed in fiat currency. As simple as that.",
     "url": "https://github.com/ibz/btc2fiat",
-    "run": "btc2fiat $@"
+    "run": "/usr/local/bin/btc2fiat $@"
   },
   {
     "name": "charge-lnd",
