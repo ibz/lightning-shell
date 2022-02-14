@@ -8,8 +8,13 @@ apps - A list of apps available in the Lightning Shell
 
 # DESCRIPTION
 
-{% for app in apps %}
- * {{ app.name }} ({{ app.url }})
+{% for cat in categories %}
+## {{ cat.name }} tools
+  {% for app in apps %}
+    {% if app.category == cat.id %}
+  * {{ app.name }} ({{ app.url }})
 
-   {{ app.description }}
+    {{ app.description }}
+    {% endif %}
+  {% endfor %}
 {% endfor %}

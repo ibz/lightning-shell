@@ -1,85 +1,125 @@
 {
+  "categories": [
+    {
+      "id": "ln",
+      "name": "General Lightning node management"
+    },
+    {
+      "id": "ln-fees",
+      "name": "Lightning node fee management"
+    },
+    {
+      "id": "ln-rebalance",
+      "name": "Lightning node rebalancing"
+    },
+    {
+      "id": "market",
+      "name": "Market analysis"
+    },
+    {
+      "id": "data",
+      "name": "Data processing"
+    },
+    {
+      "id": "net",
+      "name": "Networking"
+    }
+  ],
   "apps": [
   {
     "name": "bos",
+    "category": "ln",
     "description": "Balance of Satoshis - Commands for working with LND balances",
     "url": "https://github.com/alexbosworth/balanceofsatoshis",
     "run": "bos-config && /usr/local/bin/bos $@ --node=mainnode"
   },
   {
     "name": "btc2fiat",
+    "category": "market",
     "description": "Bitcoin price expressed in fiat currency. As simple as that.",
     "url": "https://github.com/ibz/btc2fiat",
     "run": "btc2fiat $@"
   },
   {
     "name": "charge-lnd",
+    "category": "ln-fees",
     "description": "A simple policy based fee manager for LND",
     "url": "https://github.com/accumulator/charge-lnd",
     "run": "/usr/local/bin/charge-lnd --grpc=${LND_IP}:${LND_GRPC_PORT} --lnddir=/lnd $@"
   },
   {
     "name": "csview",
+    "category": "data",
     "description": "A high performance CSV viewer",
     "url": "https://github.com/wfxr/csview",
     "run": "/usr/local/bin/csview $@"
   },
   {
     "name": "dog",
+    "category": "net",
     "description": "A command-line DNS client",
     "url": "https://github.com/ogham/dog",
     "run": "/usr/local/bin/dog $@"
   },
   {
     "name": "gping",
+    "category": "net",
     "description": "Ping, but with a graph",
     "url": "https://github.com/orf/gping",
     "run": "/usr/local/bin/gping $@"
   },
   {
     "name": "igniter",
+    "category": "ln-rebalance",
     "description": "Circular rebalancing by sending a payment back to yourself using a specific route",
     "url": "https://github.com/RooSoft/igniter",
     "run": "igniter-config && /opt/igniter/igniter.sh $@"
   },
   {
     "name": "lncli",
+    "category": "ln",
     "description": "LND's command line interface",
     "url": "https://github.com/lightningnetwork/lnd",
     "run": "/usr/local/bin/lncli --rpcserver=${LND_IP}:${LND_GRPC_PORT} --lnddir=/lnd $@"
   },
   {
     "name": "lntop",
+    "category": "lntop",
     "description": "LN terminal dashboard",
     "url": "https://github.com/edouardparis/lntop",
     "run": "LND_ADDRESS=\"//${LND_IP}:${LND_GRPC_PORT}\" CERT_PATH=/lnd/tls.cert MACAROON_PATH=/lnd/data/chain/bitcoin/${BITCOIN_NETWORK:-mainnet}/readonly.macaroon /usr/local/bin/lntop $@"
   },
   {
     "name": "oha",
+    "category": "net",
     "description": "HTTP load generator",
     "url": "https://github.com/hatoo/oha",
     "run": "/usr/local/bin/oha $@"
   },
   {
     "name": "perfectly-balanced",
+    "category": "ln-rebalance",
     "description": "Script to make your LND node perfectly balanced as everything in life should be",
     "url": "https://github.com/cuaritas/perfectly-balanced",
     "run": "if [ $# -eq 0 ]; then LND_DIR=/lnd REBALANCE_LND_FILEPATH=/opt/rebalance-lnd/rebalance.py /opt/perfectly-balanced/perfectlybalanced.sh list; else LND_DIR=/lnd REBALANCE_LND_FILEPATH=/opt/rebalance-lnd/rebalance.py /opt/perfectly-balanced/perfectlybalanced.sh $@; fi"
   },
   {
     "name": "rebalance-lnd",
+    "category": "ln-rebalance",
     "description": "A script that can be used to balance lightning channels of a LND node",
     "url": "https://github.com/C-Otto/rebalance-lnd",
     "run": "/opt/rebalance-lnd/rebalance.py --grpc=${LND_IP}:${LND_GRPC_PORT} --lnddir=/lnd $@"
   },
   {
     "name": "sc-im",
+    "category": "data",
     "description": "Spreadsheet program for your terminal",
     "url": "https://github.com/andmarti1424/sc-im",
     "run": "/usr/local/bin/sc-im $@"
   },
   {
     "name": "suez",
+    "category": "ln-fees",
     "description": "Tool for pretty printing and optimizing Lightning Network channels",
     "url": "https://github.com/prusnak/suez",
     "run": "/opt/suez/suez --client-args=--rpcserver=${LND_IP}:${LND_GRPC_PORT} --client-args=--lnddir=/lnd $@"
