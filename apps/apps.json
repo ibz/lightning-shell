@@ -1,6 +1,10 @@
 {
   "categories": [
     {
+      "id": "bitcoin",
+      "name": "General Bitcoin node management"
+    },
+    {
       "id": "ln",
       "name": "General Lightning node management"
     },
@@ -26,6 +30,13 @@
     }
   ],
   "apps": [
+  {
+    "name": "bitcoin-cli",
+    "category": "bitcoin",
+    "description": "Bitcoin Core CLI",
+    "url": "https://bitcoincore.org",
+    "run": "/usr/local/bin/bitcoin-cli -rpcconnect=${BITCOIN_IP} -rpcport=${BITCOIN_RPC_PORT} -rpcuser=${BITCOIN_RPC_USER} -rpcpassword=${BITCOIN_RPC_PASS} $@"
+  },
   {
     "name": "bos",
     "category": "ln",

@@ -49,6 +49,3 @@
 [submodule "apps/weechat"]
 	path = apps/weechat
 	url = git://github.com/weechat/weechat.git
-[submodule "apps/mempool-cli"]
-	path = apps/mempool-cli
-	url = git://github.com/mempool/mempool-cli.git
