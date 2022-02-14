@@ -30,8 +30,6 @@ ENV GOARCH=${arch}
 ENV GOOS=linux
 RUN cd /build/apps/lntop && mkdir bin && go build -o bin/lntop cmd/lntop/main.go
 
-RUN cd /build/apps/mempool-cli && mkdir bin && go build -o bin/mempool-cli
-
 RUN cd /build/apps/sc-im/src && make
 
 RUN cd /build/apps/libwebsockets && mkdir build && cd build && cmake .. -DLWS_WITH_LIBUV=ON && make && make install
@@ -101,7 +99,6 @@ COPY \
     --from=golang-builder \
     /lnd/lncli \
     /build/apps/lntop/bin/lntop \
-    /build/apps/mempool-cli/bin/mempool-cli \
     /build/apps/sc-im/src/sc-im \
     /build/apps/sc-im/src/scopen \
     /build/apps/ttyd/build/ttyd \
