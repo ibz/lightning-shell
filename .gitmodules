@@ -40,3 +40,6 @@
 [submodule "apps/tickrs"]
 	path = apps/tickrs
 	url = git://github.com/tarkah/tickrs.git
+[submodule "apps/mempool-cli"]
+	path = apps/mempool-cli
+	url = git://github.com/mempool/mempool-cli.git
