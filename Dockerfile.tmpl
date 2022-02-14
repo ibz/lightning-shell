@@ -78,8 +78,6 @@ RUN cd /build/apps/gping && cargo build --release
 
 RUN cd /build/apps/oha && cargo build --release
 
-#RUN cd /build/apps/tickrs && cargo build --release
-
 FROM node:16-${DEBIAN_VERSION}-slim
 
 ARG balanceofsatoshis_tag
@@ -176,8 +174,6 @@ COPY \
     /build/apps/gping/target/release/gping \
     /build/apps/oha/target/release/oha \
     /usr/local/bin/
-
-#COPY --from=rust-builder /build/apps/tickrs/target/release/tickrs /usr/local/bin/
 
 # VERSION_SPECIFIC_COPY_STEPS
 
