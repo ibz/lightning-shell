@@ -158,7 +158,7 @@ COPY --chown=lnshell:lnshell install-apps.sh bin/* /home/lnshell/.local/bin/
 COPY --chown=lnshell:lnshell apps/apps.json /home/lnshell/.local/share
 RUN /bin/bash /home/lnshell/.local/bin/install-apps.sh
 RUN chmod +x /home/lnshell/.local/bin/*
-RUN echo "PATH=~/.local/bin:$PATH; export PATH" >> /home/lnshell/.bashrc \
+RUN echo "export PATH=/home/lnshell/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" >> /home/lnshell/.bashrc \
  && echo "cat /etc/motd" >> /home/lnshell/.bashrc \
  && echo "${version}" > /home/lnshell/.lnshell-version
 
