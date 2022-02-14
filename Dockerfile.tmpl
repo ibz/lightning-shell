@@ -83,46 +83,44 @@ RUN cd /build/apps/oha && cargo build --release
 FROM node:16-${DEBIAN_VERSION}-slim
 
 ARG balanceofsatoshis_tag
-RUN npm i -g balanceofsatoshis@${balanceofsatoshis_tag}
 
-RUN echo "deb http://deb.debian.org/debian ${DEBIAN_VERSION}-backports main" | tee -a /etc/apt/sources.list
-
-RUN apt update \
-    && apt upgrade -y \
-    && apt install -y --no-install-recommends \
-        bc \
-        ca-certificates \
-        curl \
-        figlet \
-        git \
-        iputils-ping \
-        jq \
-        less \
-        libc6 \
-        libcap2 \
-        libssl1.1 \
-        libuv1 \
-        links \
-        man \
-        mc \
-        micro \
-        nano \
-        procps \
-        python3 \
-        python3-pip \
-        python3-venv \
-        python3-wheel \
-        screen \
-        sysstat \
-        telnet \
-        tini \
-        tmux \
-        vim \
-        zlib1g <VERSION_SPECIFIC_DEPENDENCIES> \
-    && apt clean all \
-    && rm -rf /var/lib/apt/lists/*
-
-RUN pip3 install btc2fiat
+RUN echo "deb http://deb.debian.org/debian ${DEBIAN_VERSION}-backports main" | tee -a /etc/apt/sources.list \
+ && apt update \
+ && apt upgrade -y \
+ && apt install -y --no-install-recommends \
+    bc \
+    ca-certificates \
+    curl \
+    figlet \
+    git \
+    iputils-ping \
+    jq \
+    less \
+    libc6 \
+    libcap2 \
+    libssl1.1 \
+    libuv1 \
+    links \
+    man \
+    mc \
+    micro \
+    nano \
+    procps \
+    python3 \
+    python3-pip \
+    python3-venv \
+    python3-wheel \
+    screen \
+    sysstat \
+    telnet \
+    tini \
+    tmux \
+    vim \
+    zlib1g <VERSION_SPECIFIC_DEPENDENCIES> \
+ && apt clean all \
+ && rm -rf /var/lib/apt/lists/* \
+ && pip3 install btc2fiat \
+ && npm i -g balanceofsatoshis@${balanceofsatoshis_tag}
 
 COPY --from=golang-builder /build/apps/charge-lnd/ /opt/charge-lnd/
 COPY --from=golang-builder /build/apps/igniter/ /opt/igniter/
