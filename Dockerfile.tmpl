@@ -80,7 +80,7 @@ RUN echo "deb http://deb.debian.org/debian ${DEBIAN_VERSION}-backports main" | t
 
 RUN apt update \
     && apt upgrade -y \
-    && apt install -y --no-install-recommends bc ca-certificates curl git iputils-ping jq libc6 libcap2 libssl1.1 libuv1 links man micro nano procps python3 python3-pip python3-venv python3-wheel screen sysstat tini tmux vim zlib1g <VERSION_SPECIFIC_DEPENDENCIES> \
+    && apt install -y --no-install-recommends bc ca-certificates curl git iputils-ping jq libc6 libcap2 libssl1.1 libuv1 links man mc micro nano procps python3 python3-pip python3-venv python3-wheel screen sysstat telnet tini tmux vim zlib1g <VERSION_SPECIFIC_DEPENDENCIES> \
     && apt clean all \
     && rm -rf /var/lib/apt/lists/*
 
