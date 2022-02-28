@@ -1,9 +1,11 @@
 #!/bin/bash
 
 if [ ! -f /data/igniter.conf ]; then
+    echo "Adding sample igniter.conf to the /data directory, which is automatically persisted."
     cp /opt/igniter/igniter.conf /data
 fi
 
 if [ ! -f ~/igniter.conf ]; then
+    echo "Linking /data/igniter.conf to ~/igniter.conf. Editing either of them will have the same effect."
     ln -s /data/igniter.conf ~/
 fi
