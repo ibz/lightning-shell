@@ -1,5 +1,6 @@
 btc2fiat == 0.1.1
 charge-lnd
 lndmanage
+plottoterminal
 rebalance-lnd
 suez
