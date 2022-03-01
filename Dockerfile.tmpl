@@ -117,7 +117,7 @@ RUN echo "deb http://deb.debian.org/debian ${DEBIAN_VERSION}-backports main" | t
     zlib1g <VERSION_SPECIFIC_DEPENDENCIES> \
  && apt clean all \
  && rm -rf /var/lib/apt/lists/* \
- && pip3 install btc2fiat \
+ && pip3 install btc2fiat lndmanage \
  && npm i -g balanceofsatoshis@${balanceofsatoshis_tag}
 
 COPY --from=golang-builder /build/apps/charge-lnd/ /opt/charge-lnd/
