@@ -3,6 +3,8 @@ ARG lnd_version=v0.14.2-beta
 
 ARG balanceofsatoshis_tag=v11.55.0
 
+ARG node_version=16.14.0
+
 FROM python:3 as python-builder
 
 RUN apt-get update \
@@ -42,16 +44,16 @@ COPY . /build
 
 ARG bitcoin_version
 RUN if [ "$arch" = "arm64" ]; then export btc_arch=aarch64; else export btc_arch=x86_64; fi \
- && curl -sSL -o bitcoin-${bitcoin_version}-${btc_arch}-linux-gnu.tar.gz https://bitcoincore.org/bin/bitcoin-core-${bitcoin_version}/bitcoin-${bitcoin_version}-${btc_arch}-linux-gnu.tar.gz \
- && curl -sSL -o SHA256SUMS https://bitcoincore.org/bin/bitcoin-core-${bitcoin_version}/SHA256SUMS \
+ && curl -sSLO https://bitcoincore.org/bin/bitcoin-core-${bitcoin_version}/bitcoin-${bitcoin_version}-${btc_arch}-linux-gnu.tar.gz \
+ && curl -sSLO https://bitcoincore.org/bin/bitcoin-core-${bitcoin_version}/SHA256SUMS \
  && sha256sum --ignore-missing --check SHA256SUMS \
  && tar xzf bitcoin-${bitcoin_version}-${btc_arch}-linux-gnu.tar.gz \
  && mv bitcoin-${bitcoin_version} /bitcoin
 
 ARG lnd_version
-RUN curl -sSL -o lnd-linux-${arch}-${lnd_version}.tar.gz https://github.com/lightningnetwork/lnd/releases/download/${lnd_version}/lnd-linux-${arch}-${lnd_version}.tar.gz \
- && curl -sSL -o manifest-guggero-${lnd_version}.sig https://github.com/lightningnetwork/lnd/releases/download/${lnd_version}/manifest-guggero-${lnd_version}.sig \
- && curl -sSL -o manifest-${lnd_version}.txt https://github.com/lightningnetwork/lnd/releases/download/${lnd_version}/manifest-${lnd_version}.txt \
+RUN curl -sSLO https://github.com/lightningnetwork/lnd/releases/download/${lnd_version}/lnd-linux-${arch}-${lnd_version}.tar.gz \
+ && curl -sSLO https://github.com/lightningnetwork/lnd/releases/download/${lnd_version}/manifest-guggero-${lnd_version}.sig \
+ && curl -sSLO https://github.com/lightningnetwork/lnd/releases/download/${lnd_version}/manifest-${lnd_version}.txt \
  && curl https://raw.githubusercontent.com/lightningnetwork/lnd/master/scripts/keys/guggero.asc | gpg --import \
  && gpg --verify manifest-guggero-${lnd_version}.sig manifest-${lnd_version}.txt \
  && tar xzf lnd-linux-${arch}-${lnd_version}.tar.gz \
@@ -92,9 +94,13 @@ RUN cd /build/apps/gping && cargo build --release
 
 RUN cd /build/apps/oha && cargo build --release
 
-FROM node:16-${DEBIAN_VERSION}-slim
+FROM python:3.8-slim-${DEBIAN_VERSION}
+
+ARG node_version
 
 ARG balanceofsatoshis_tag
+
+ARG arch
 
 RUN echo "deb http://deb.debian.org/debian ${DEBIAN_VERSION}-backports main" | tee -a /etc/apt/sources.list \
  && apt update \
@@ -118,21 +124,25 @@ RUN echo "deb http://deb.debian.org/debian ${DEBIAN_VERSION}-backports main" | t
     micro \
     nano \
     procps \
-    python3 \
-    python3-pip \
-    python3-venv \
-    python3-wheel \
     screen \
     sysstat \
     telnet \
     tini \
     tmux \
     vim \
+    xz-utils \
     zlib1g <VERSION_SPECIFIC_DEPENDENCIES> \
  && apt clean all \
  && rm -rf /var/lib/apt/lists/* \
- && pip3 install btc2fiat \
- && npm i -g balanceofsatoshis@${balanceofsatoshis_tag}
+ && if [ "$arch" = "amd64" ]; then export node_arch=x64; else export node_arch=arm64; fi \
+ && curl -sSLO "https://nodejs.org/dist/v$node_version/node-v$node_version-linux-$node_arch.tar.xz" \
+ && tar -xf "node-v$node_version-linux-$node_arch.tar.xz" && rm -f "/node-v$node_version-linux-$node_arch.tar.xz" \
+ && ln -s "/node-v$node_version-linux-$node_arch/bin/node" /usr/local/bin/node \
+ && ln -s "/node-v$node_version-linux-$node_arch/bin/npm" /usr/local/bin/npm \
+ && ln -s "/node-v$node_version-linux-$node_arch/bin/npx" /usr/local/bin/npx \
+ && pip install btc2fiat \
+ && npm i -g balanceofsatoshis@${balanceofsatoshis_tag} \
+ && npm cache clean --force
 
 COPY --from=python-builder /build/apps/charge-lnd/ /opt/charge-lnd/
 COPY --from=python-builder /build/apps/lndmanage/ /opt/lndmanage/
@@ -142,11 +152,10 @@ COPY --from=python-builder /build/apps/suez/ /opt/suez/
 COPY --from=golang-builder /build/apps/igniter/ /opt/igniter/
 COPY --from=golang-builder /build/apps/perfectly-balanced/ /opt/perfectly-balanced/
 
-RUN chmod +x /opt/igniter/igniter.sh /opt/perfectly-balanced/perfectlybalanced.sh
-
 ENV PATH="/opt/lndmanage/.venv/bin:$PATH"
 
-RUN cd /opt/charge-lnd \
+RUN chmod +x /opt/igniter/igniter.sh /opt/perfectly-balanced/perfectlybalanced.sh \
+ && cd /opt/charge-lnd \
  && <INSTALL_MAYBE_NO_GRPC> \
  && python3 setup.py install \
  && rm -rf /opt/charge-lnd \
@@ -199,10 +208,9 @@ COPY \
 
 COPY motd /etc/motd
 COPY start.sh lsh_exec.sh /
-RUN chmod +x /start.sh
-
-# The node container already has an user called node, rename it
-RUN groupmod --new-name lnshell node && usermod --login lnshell --move-home --home /home/lnshell node
+RUN chmod +x /start.sh \
+ && groupadd -r lnshell --gid=1000 \
+ && useradd -r -g lnshell --uid=1000 --create-home --shell /bin/bash lnshell
 
 USER lnshell
 WORKDIR /home/lnshell
@@ -212,9 +220,9 @@ RUN mkdir -p /home/lnshell/.local/bin /home/lnshell/.local/share
 COPY --chown=lnshell:lnshell install-apps.sh bin/* /home/lnshell/.local/bin/
 COPY --chown=lnshell:lnshell apps/apps.json /home/lnshell/.local/share
 
-RUN /bin/bash /home/lnshell/.local/bin/install-apps.sh
-RUN chmod +x /home/lnshell/.local/bin/*
-RUN echo "export PATH=/home/lnshell/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" >> /home/lnshell/.bashrc \
+RUN /bin/bash /home/lnshell/.local/bin/install-apps.sh \
+ && chmod +x /home/lnshell/.local/bin/* \
+ && echo "export PATH=/home/lnshell/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" >> /home/lnshell/.bashrc \
  && echo "cat /etc/motd" >> /home/lnshell/.bashrc \
  && echo "${version}" > /home/lnshell/.lnshell-version
 
