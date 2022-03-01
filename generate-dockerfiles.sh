@@ -12,10 +12,6 @@ EOF
     sed -i "s/\${DEBIAN_VERSION}/${debian_version}/g" Dockerfile.${debian_version}
 done
 
-# no VERSION_SPECIFIC_BUILD_STEPS for now
-sed -i "/\n# VERSION_SPECIFIC_BUILD_STEPS/d" Dockerfile.buster
-sed -i "/\n# VERSION_SPECIFIC_BUILD_STEPS/d" Dockerfile.bullseye
-
 # For Buster, we need python3-grpcio and python3-setuptools for Python dependencies and libjson-c3 for ttyd
 sed -i "s/<VERSION_SPECIFIC_DEPENDENCIES>/python3-grpcio python3-setuptools libjson-c3/g" Dockerfile.buster
 # For Bullseye, we need libjson-c5 instead of libjson-c3
@@ -25,7 +21,3 @@ sed -i "s/<VERSION_SPECIFIC_DEPENDENCIES>/libjson-c5/" Dockerfile.bullseye
 sed -i "s/<INSTALL_MAYBE_NO_GRPC>/cat requirements.txt | grep -v grpcio > requirements-nogrpcio.txt \&\& pip3 install -r requirements-nogrpcio.txt/g" Dockerfile.buster
 # On Bullseye, pip is able to find a prebuilt wheel, so we don't need this filter
 sed -i "s/<INSTALL_MAYBE_NO_GRPC>/pip3 install -r requirements.txt/g" Dockerfile.bullseye
-
-# no VERSION_SPECIFIC_COPY_STEPS for now
-sed -i "/\n# VERSION_SPECIFIC_COPY_STEPS/d" Dockerfile.buster
-sed -i "/\n# VERSION_SPECIFIC_COPY_STEPS/d" Dockerfile.bullseye

@@ -56,7 +56,7 @@
     "category": "ln-fees",
     "description": "A simple policy based fee manager for LND",
     "url": "https://github.com/accumulator/charge-lnd",
-    "run": "/usr/local/bin/charge-lnd --grpc=${LND_IP}:${LND_GRPC_PORT} --lnddir=/lnd $@"
+    "run": "/opt/charge-lnd/charge_lnd/charge_lnd.py --grpc=${LND_IP}:${LND_GRPC_PORT} --lnddir=/lnd $@"
   },
   {
     "name": "csview",
