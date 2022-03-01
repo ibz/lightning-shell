@@ -63,6 +63,16 @@ RUN cd /build/apps/suez && /root/.local/bin/poetry export -f requirements.txt --
 
 RUN jinja2 /build/apps/apps.7.md /build/apps/apps.json | pandoc -s -t man | gzip > /build/apps/apps.7.gz
 
+RUN mkdir -p /opt \
+ && mv \
+    /build/apps/charge-lnd/ \
+    /build/apps/igniter/ \
+    /build/apps/lndmanage/ \
+    /build/apps/perfectly-balanced/ \
+    /build/apps/rebalance-lnd/ \
+    /build/apps/suez/ \
+    /opt
+
 ###############
 FROM golang:1.17-${DEBIAN_VERSION} AS golang-builder
 ARG arch
@@ -155,12 +165,7 @@ RUN echo "deb http://deb.debian.org/debian ${DEBIAN_VERSION}-backports main" | t
  && npm i -g balanceofsatoshis@${balanceofsatoshis_tag} \
  && npm cache clean --force
 
-COPY --from=python-builder /build/apps/charge-lnd/ /opt/charge-lnd/
-COPY --from=python-builder /build/apps/igniter/ /opt/igniter/
-COPY --from=python-builder /build/apps/lndmanage/ /opt/lndmanage/
-COPY --from=python-builder /build/apps/perfectly-balanced/ /opt/perfectly-balanced/
-COPY --from=python-builder /build/apps/rebalance-lnd/ /opt/rebalance-lnd/
-COPY --from=python-builder /build/apps/suez/ /opt/suez/
+COPY --from=python-builder /opt/ /opt/
 
 ENV PATH="/opt/lndmanage/.venv/bin:$PATH" LD_LIBRARY_PATH=/usr/local/lib/
 
@@ -183,7 +188,6 @@ COPY \
     /build/apps/ttyd/build/ttyd \
     /build/apps/weechat/build/src/gui/curses/normal/weechat \
     /usr/local/bin/
-
 COPY \
     --from=builder \
     /usr/local/lib/libwebsockets.so \
