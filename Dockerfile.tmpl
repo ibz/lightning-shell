@@ -43,6 +43,10 @@ RUN cd /build/apps/circuitbreaker && mkdir bin && go build -o bin/circuitbreaker
 
 RUN cd /build/apps/libwebsockets && mkdir build && cd build && cmake .. -DLWS_WITH_LIBUV=ON && make && make install
 
+RUN cd /build/apps/lndmanage && python3 -m venv .venv
+ENV PATH="/build/apps/lndmanage/.venv/bin:$PATH"
+RUN cd /build/apps/lndmanage && pip install wheel && pip install -r requirements.txt
+
 RUN cd /build/apps/lntop && mkdir bin && go build -o bin/lntop cmd/lntop/main.go
 
 RUN cd /build/apps/sc-im/src && make
@@ -117,22 +121,26 @@ RUN echo "deb http://deb.debian.org/debian ${DEBIAN_VERSION}-backports main" | t
     zlib1g <VERSION_SPECIFIC_DEPENDENCIES> \
  && apt clean all \
  && rm -rf /var/lib/apt/lists/* \
- && pip3 install --upgrade pip setuptools wheel \
- && pip3 install btc2fiat lndmanage \
+ && pip3 install btc2fiat \
  && npm i -g balanceofsatoshis@${balanceofsatoshis_tag}
 
 COPY --from=golang-builder /build/apps/charge-lnd/ /opt/charge-lnd/
 COPY --from=golang-builder /build/apps/igniter/ /opt/igniter/
+COPY --from=golang-builder /build/apps/lndmanage/ /opt/lndmanage/
 COPY --from=golang-builder /build/apps/perfectly-balanced/ /opt/perfectly-balanced/
 COPY --from=golang-builder /build/apps/rebalance-lnd/ /opt/rebalance-lnd/
 COPY --from=golang-builder /build/apps/suez/ /opt/suez/
 
 RUN chmod +x /opt/igniter/igniter.sh /opt/perfectly-balanced/perfectlybalanced.sh
 
+ENV PATH="/opt/lndmanage/.venv/bin:$PATH"
+
 RUN cd /opt/charge-lnd \
  && <INSTALL_MAYBE_NO_GRPC> \
  && python3 setup.py install \
  && rm -rf /opt/charge-lnd \
+ && cd /opt/lndmanage \
+ && <INSTALL_MAYBE_NO_GRPC> \
  && cd /opt/rebalance-lnd \
  && <INSTALL_MAYBE_NO_GRPC> \
  && cd /opt/suez \

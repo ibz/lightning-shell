@@ -46,3 +46,6 @@
 [submodule "apps/weechat"]
 	path = apps/weechat
 	url = git://github.com/weechat/weechat.git
+[submodule "apps/lndmanage"]
+	path = apps/lndmanage
+	url = git://github.com/bitromortac/lndmanage.git
