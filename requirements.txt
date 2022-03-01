@@ -1,4 +1,4 @@
-btc2fiat == 0.1.1
+btc2fiat
 charge-lnd
 lndmanage
 rebalance-lnd
