@@ -103,6 +103,8 @@ RUN apt-get update \
 WORKDIR /build
 COPY . /build
 
+ENV CARGO_TARGET_DIR=/build/target
+
 RUN cd /build/apps/csview && cargo build --release
 
 RUN cd /build/apps/dog && cargo build --release
@@ -133,8 +135,10 @@ RUN echo "deb http://deb.debian.org/debian ${DEBIAN_VERSION}-backports main" | t
     iputils-ping \
     jq \
     less \
+    libaspell15 \
     libc6 \
     libcap2 \
+    libpython3.7 \
     libssl1.1 \
     libuv1 \
     links \
@@ -216,10 +220,10 @@ COPY --from=rust-builder /build/apps/dog/man/dog.1.gz /usr/local/share/man/man1/
 
 COPY \
     --from=rust-builder \
-    /build/apps/csview/target/release/csview \
-    /build/apps/dog/target/release/dog \
-    /build/apps/gping/target/release/gping \
-    /build/apps/oha/target/release/oha \
+    /build/target/release/csview \
+    /build/target/release/dog \
+    /build/target/release/gping \
+    /build/target/release/oha \
     /usr/local/bin/
 
 COPY motd /etc/motd
