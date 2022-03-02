@@ -27,6 +27,10 @@
     {
       "id": "net",
       "name": "Networking"
+    },
+    {
+      "id": "social",
+      "name": "Social"
     }
   ],
   "apps": [
@@ -94,6 +98,13 @@
     "run": "/usr/local/bin/lncli --rpcserver=${LND_IP}:${LND_GRPC_PORT} --lnddir=/lnd $@"
   },
   {
+    "name": "lndmanage",
+    "category": "ln",
+    "description": "Channel management tool",
+    "url": "https://github.com/bitromortac/lndmanage",
+    "run": "lndmanage-config && /usr/local/bin/lndmanage $@"
+  },
+  {
     "name": "lntop",
     "category": "lntop",
     "description": "LN terminal dashboard",
@@ -134,5 +145,19 @@
     "description": "Tool for pretty printing and optimizing Lightning Network channels",
     "url": "https://github.com/prusnak/suez",
     "run": "/opt/suez/suez --client-args=--rpcserver=${LND_IP}:${LND_GRPC_PORT} --client-args=--lnddir=/lnd $@"
+  },
+  {
+    "name": "weechat",
+    "category": "social",
+    "description": "The extensible chat client",
+    "url": "https://weechat.org/",
+    "run": "/usr/local/bin/weechat $@"
+  },
+  {
+    "name": "whatsat",
+    "category": "social",
+    "description": "End-to-end encrypted, onion-routed, censorship-resistant, peer-to-peer instant messaging over LN",
+    "url": "https://github.com/joostjager/whatsat",
+    "run": "/usr/local/bin/whatsat --rpcserver ${LND_IP}:${LND_GRPC_PORT} --lnddir /lnd --tlscertpath /lnd/tls.cert --macaroonpath /lnd/data/chain/bitcoin/${BITCOIN_NETWORK:-mainnet}/admin.macaroon $@"
   }
 ]}

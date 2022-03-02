@@ -1,0 +1,12 @@
+#!/bin/bash
+
+mkdir -p /home/lnshell/.lndmanage
+
+if [ ! -f /home/lnshell/.lndmanage/config.ini ]; then
+    cat << EOF >> /home/lnshell/.lndmanage/config.ini
+[network]
+lnd_grpc_host = ${LND_IP}:${LND_GRPC_PORT}
+tls_cert_file = /lnd/tls.cert
+admin_macaroon_file = /lnd/data/chain/bitcoin/${BITCOIN_NETWORK:-mainnet}/admin.macaroon
+EOF
+fi
