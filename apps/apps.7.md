@@ -12,7 +12,7 @@ apps - A list of apps available in the Lightning Shell
 ## {{ cat.name }} tools
   {% for app in apps %}
     {% if app.category == cat.id %}
-  * {{ app.name }} ({{ app.url }})
+  * {{ app.name }} - {{ app.url }}
 
     {{ app.description }}
     {% endif %}

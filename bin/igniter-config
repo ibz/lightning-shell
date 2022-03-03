@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ ! -f /data/igniter.conf ]; then
-    echo "Adding sample igniter.conf to the /data directory, which is automatically persisted."
+    echo "Adding sample igniter.conf to the /data directory, which is persisted between updates."
     cp /opt/igniter/igniter.conf /data
 fi
 

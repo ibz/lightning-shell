@@ -1,0 +1,12 @@
+#!/bin/bash
+
+if [ ! -f /data/circuitbreaker.yaml ]; then
+    echo "Adding sample circuitbreaker.yaml to the /data directory, which is persisted between updates."
+    cp /opt/circuitbreaker/circuitbreaker-example.yaml /data/circuitbreaker.yaml
+fi
+
+if [ ! -f ~/.circuitbreaker/circuitbreaker.yaml ]; then
+    echo "Linking /data/circuitbreaker.yaml to ~/.circuitbreaker/circuitbreaker.yaml. Editing either of them will have the same effect."
+    mkdir -p ~/.circuitbreaker
+    ln -s /data/circuitbreaker.yaml ~/.circuitbreaker/circuitbreaker.yaml
+fi

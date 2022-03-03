@@ -216,6 +216,7 @@ COPY \
     /build/apps/sc-im/src/sc-im.1 \
     /usr/local/share/man/man1/
 COPY --from=python-builder /build/apps/apps.7.gz /usr/share/man/man7/
+COPY --from=golang-builder /build/apps/circuitbreaker/circuitbreaker-example.yaml /opt/circuitbreaker/
 COPY --from=rust-builder /build/apps/dog/man/dog.1.gz /usr/local/share/man/man1/
 
 COPY \

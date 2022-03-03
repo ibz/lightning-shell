@@ -63,6 +63,13 @@
     "run": "/opt/charge-lnd/charge_lnd/charge_lnd.py --grpc=${LND_IP}:${LND_GRPC_PORT} --lnddir=/lnd $@"
   },
   {
+    "name": "circuitbreaker",
+    "category": "ln",
+    "description": "Firewall for your LND",
+    "url": "https://github.com/lightningequipment/circuitbreaker",
+    "run": "circuitbreaker-config && /usr/local/bin/circuitbreaker $@"
+  },
+  {
     "name": "csview",
     "category": "data",
     "description": "A high performance CSV viewer",
