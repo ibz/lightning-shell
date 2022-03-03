@@ -10,7 +10,7 @@ FROM debian:${DEBIAN_VERSION}-slim as builder
 ARG arch
 
 RUN apt-get update \
-    && apt-get install -y bison build-essential cmake curl gnupg libaspell-dev libcurl4-gnutls-dev libgcrypt20-dev libjson-c-dev libncursesw5-dev libgnutls28-dev libwebsockets-dev pkg-config python3-dev zlib1g-dev \
+    && apt-get install -y asciidoctor bison build-essential cmake curl gnupg libaspell-dev libcurl4-gnutls-dev libgcrypt20-dev libjson-c-dev libncursesw5-dev libgnutls28-dev libwebsockets-dev pkg-config python3-dev zlib1g-dev \
     && apt clean all
 
 WORKDIR /build
@@ -39,7 +39,13 @@ RUN cd /build/apps/sc-im/src && make
 
 RUN cd /build/apps/ttyd && mkdir build && cd build && cmake .. && make
 
-RUN cd /build/apps/weechat && mkdir build && cd build && cmake .. -DENABLE_PHP=OFF -DENABLE_PERL=OFF -DENABLE_RUBY=OFF -DENABLE_TCL=OFF -DENABLE_LUA=OFF -DENABLE_GUILE=OFF && make && make install
+RUN cd /build/apps/weechat \
+ && mkdir build \
+ && cd build \
+ && cmake .. -DENABLE_PHP=OFF -DENABLE_PERL=OFF -DENABLE_RUBY=OFF -DENABLE_TCL=OFF -DENABLE_LUA=OFF -DENABLE_GUILE=OFF \
+ && make \
+ && make install \
+ && asciidoctor -b manpage /build/apps/weechat/doc/en/weechat.1.en.adoc
 
 ###############
 FROM python:3 as python-builder
@@ -214,7 +220,7 @@ COPY \
     --from=builder \
     /bitcoin/share/man/man1/bitcoin-cli.1 \
     /build/apps/sc-im/src/sc-im.1 \
-    /usr/share/man/man1/weechat.1.gz \
+    /build/apps/weechat/doc/en/weechat.1 \
     /usr/local/share/man/man1/
 COPY --from=python-builder /build/apps/apps.7.gz /usr/share/man/man7/
 COPY --from=golang-builder /build/apps/circuitbreaker/circuitbreaker-example.yaml /opt/circuitbreaker/
