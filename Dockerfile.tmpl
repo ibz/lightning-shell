@@ -214,6 +214,7 @@ COPY \
     --from=builder \
     /bitcoin/share/man/man1/bitcoin-cli.1 \
     /build/apps/sc-im/src/sc-im.1 \
+    /usr/local/share/man/man1/weechat.1.gz \
     /usr/local/share/man/man1/
 COPY --from=python-builder /build/apps/apps.7.gz /usr/share/man/man7/
 COPY --from=golang-builder /build/apps/circuitbreaker/circuitbreaker-example.yaml /opt/circuitbreaker/
