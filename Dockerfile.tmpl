@@ -171,7 +171,7 @@ RUN echo "deb http://deb.debian.org/debian ${DEBIAN_VERSION}-backports main" | t
  && ln -s "/node-v$node_version-linux-$node_arch/bin/npm" /usr/local/bin/npm \
  && ln -s "/node-v$node_version-linux-$node_arch/bin/npx" /usr/local/bin/npx \
  && pip3 install --upgrade pip \
- && pip3 install btc2fiat \
+ && pip3 install btc2fiat tg \
  && npm i -g balanceofsatoshis@${balanceofsatoshis_tag} \
  && npm cache clean --force
 
