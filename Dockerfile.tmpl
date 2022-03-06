@@ -95,6 +95,8 @@ ENV GOOS=linux
 
 RUN cd /build/apps/circuitbreaker && mkdir bin && go build -o bin/circuitbreaker
 
+RUN cd /build/apps/lncli-curses && make
+
 RUN cd /build/apps/lntop && mkdir bin && go build -o bin/lntop cmd/lntop/main.go
 
 RUN cd /build/apps/whatsat && mkdir bin && go build -o bin/whatsat
@@ -212,6 +214,7 @@ COPY \
 COPY \
     --from=golang-builder \
     /build/apps/circuitbreaker/bin/circuitbreaker \
+    /build/apps/lncli-curses/lncli-curses \
     /build/apps/lntop/bin/lntop \
     /build/apps/whatsat/bin/whatsat \
     /usr/local/bin/

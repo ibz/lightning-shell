@@ -49,3 +49,6 @@
 [submodule "apps/lndmanage"]
 	path = apps/lndmanage
 	url = git://github.com/bitromortac/lndmanage.git
+[submodule "apps/lncli-curses"]
+	path = apps/lncli-curses
+	url = git://github.com/LLeny/lncli-curses.git
