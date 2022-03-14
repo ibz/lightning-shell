@@ -167,7 +167,7 @@ RUN echo "deb http://deb.debian.org/debian ${DEBIAN_VERSION}-backports main" | t
  && if [ "$arch" = "amd64" ]; then export node_arch=x64; else export node_arch=arm64; fi \
  && curl -sSLO "https://nodejs.org/dist/v$node_version/node-v$node_version-linux-$node_arch.tar.xz" \
  && tar -xf "node-v$node_version-linux-$node_arch.tar.xz" && rm -f "/node-v$node_version-linux-$node_arch.tar.xz" \
- && cd "/node-v$node_version-linux-$node_arch" && cp -r {bin,lib,share} /usr/local \
+ && cd "/node-v$node_version-linux-$node_arch" && cp -r bin lib share /usr/local \
  && cd / && rm -rf "node-v$node_version-linux-$node_arch" \
  && pip3 install --upgrade pip \
  && pip3 install btc2fiat tg \
