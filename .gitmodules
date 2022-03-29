@@ -1,51 +1,51 @@
 [submodule "apps/csview"]
 	path = apps/csview
-	url = git://github.com/wfxr/csview.git
+	url = https://github.com/wfxr/csview.git
 [submodule "apps/dog"]
 	path = apps/dog
-	url = git://github.com/ogham/dog.git
+	url = https://github.com/ogham/dog.git
 [submodule "apps/gping"]
 	path = apps/gping
-	url = git://github.com/orf/gping.git
+	url = https://github.com/orf/gping.git
 [submodule "apps/oha"]
 	path = apps/oha
-	url = git://github.com/hatoo/oha.git
+	url = https://github.com/hatoo/oha.git
 [submodule "apps/charge-lnd"]
 	path = apps/charge-lnd
-	url = git://github.com/accumulator/charge-lnd.git
+	url = https://github.com/accumulator/charge-lnd.git
 [submodule "apps/rebalance-lnd"]
 	path = apps/rebalance-lnd
-	url = git://github.com/C-Otto/rebalance-lnd.git
+	url = https://github.com/C-Otto/rebalance-lnd.git
 [submodule "apps/suez"]
 	path = apps/suez
-	url = git://github.com/prusnak/suez.git
+	url = https://github.com/prusnak/suez.git
 [submodule "apps/lntop"]
 	path = apps/lntop
-	url = git://github.com/edouardparis/lntop.git
+	url = https://github.com/edouardparis/lntop.git
 [submodule "apps/igniter"]
 	path = apps/igniter
-	url = git://github.com/RooSoft/igniter.git
+	url = https://github.com/RooSoft/igniter.git
 [submodule "apps/perfectly-balanced"]
 	path = apps/perfectly-balanced
-	url = git://github.com/cuaritas/perfectly-balanced.git
+	url = https://github.com/cuaritas/perfectly-balanced.git
 [submodule "apps/sc-im"]
 	path = apps/sc-im
-	url = git://github.com/andmarti1424/sc-im.git
+	url = https://github.com/andmarti1424/sc-im.git
 [submodule "apps/ttyd"]
 	path = apps/ttyd
-	url = git://github.com/tsl0922/ttyd.git
+	url = https://github.com/tsl0922/ttyd.git
 [submodule "apps/libwebsockets"]
 	path = apps/libwebsockets
 	url = https://libwebsockets.org/repo/libwebsockets
 [submodule "apps/circuitbreaker"]
 	path = apps/circuitbreaker
-	url = git://github.com/lightningequipment/circuitbreaker.git
+	url = https://github.com/lightningequipment/circuitbreaker.git
 [submodule "apps/whatsat"]
 	path = apps/whatsat
-	url = git://github.com/joostjager/whatsat.git
+	url = https://github.com/joostjager/whatsat.git
 [submodule "apps/weechat"]
 	path = apps/weechat
-	url = git://github.com/weechat/weechat.git
+	url = https://github.com/weechat/weechat.git
 [submodule "apps/lndmanage"]
 	path = apps/lndmanage
-	url = git://github.com/bitromortac/lndmanage.git
+	url = https://github.com/bitromortac/lndmanage.git
