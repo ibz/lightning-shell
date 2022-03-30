@@ -10,8 +10,32 @@ FROM debian:${DEBIAN_VERSION}-slim as builder
 ARG arch
 
 RUN apt-get update \
-    && apt-get install -y asciidoctor bison build-essential cmake curl gnupg libaspell-dev libcurl4-gnutls-dev libgcrypt20-dev libjson-c-dev libncursesw5-dev libgnutls28-dev libwebsockets-dev pkg-config python3-dev zlib1g-dev \
-    && apt clean all
+ && apt-get install -y \
+    asciidoctor \
+    bison \
+    build-essential \
+    cmake \
+    curl \
+    gnupg \
+    libaspell-dev \
+    libconfig-dev \
+    libcurl4-gnutls-dev \
+    libevent-dev \
+    libgcrypt20-dev \
+    libgnutls28-dev \
+    libjansson-dev \
+    libjson-c-dev \
+    liblua5.2-dev \
+    libncursesw5-dev \
+    libpython-dev \
+    libreadline-dev \
+    libssl-dev \
+    libwebsockets-dev \
+    lua5.2 \
+    pkg-config \
+    python3-dev \
+    zlib1g-dev \
+ && apt clean all
 
 WORKDIR /build
 COPY . /build
@@ -36,6 +60,8 @@ RUN curl -sSLO https://github.com/lightningnetwork/lnd/releases/download/${lnd_v
 RUN cd /build/apps/libwebsockets && mkdir build && cd build && cmake .. -DLWS_WITH_LIBUV=ON && make && make install
 
 RUN cd /build/apps/sc-im/src && make
+
+RUN cd /build/apps/tg && ./configure && make
 
 RUN cd /build/apps/ttyd && mkdir build && cd build && cmake .. && make
 
@@ -194,6 +220,7 @@ COPY \
     /lnd/lncli \
     /build/apps/sc-im/src/sc-im \
     /build/apps/sc-im/src/scopen \
+    /build/apps/tg/bin/telegram-cli \
     /build/apps/ttyd/build/ttyd \
     /build/apps/weechat/build/src/gui/curses/normal/weechat \
     /usr/local/bin/

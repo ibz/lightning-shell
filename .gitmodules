@@ -49,3 +49,6 @@
 [submodule "apps/lndmanage"]
 	path = apps/lndmanage
 	url = https://github.com/bitromortac/lndmanage.git
+[submodule "apps/tg"]
+	path = apps/tg
+	url = https://github.com/vysheng/tg.git
