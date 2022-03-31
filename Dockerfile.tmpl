@@ -100,7 +100,7 @@ RUN cd /build/apps/lntop && mkdir bin && go build -o bin/lntop cmd/lntop/main.go
 RUN cd /build/apps/whatsat && mkdir bin && go build -o bin/whatsat
 
 ###############
-FROM rustlang/rust:nightly-${DEBIAN_VERSION}-slim AS rust-builder
+FROM rust:slim-${DEBIAN_VERSION} AS rust-builder
 
 RUN apt-get update \
     && apt-get install -y gzip libssl-dev pandoc pkg-config \
