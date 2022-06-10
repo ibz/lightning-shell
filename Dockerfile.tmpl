@@ -1,13 +1,15 @@
-ARG bitcoin_version=22.0
-ARG lnd_version=v0.14.2-beta
+ARG bitcoin_version=23.0
+ARG lnd_version=v0.14.3-beta
 
-ARG balanceofsatoshis_tag=v11.55.0
+ARG balanceofsatoshis_tag=v12.13.0
 
-ARG node_version=16.14.0
+ARG node_version=16.15.1
 
 ###############
 FROM debian:${DEBIAN_VERSION}-slim as builder
-ARG arch
+ARG TARGETPLATFORM
+ARG TARGETARCH
+
 
 RUN apt-get update \
     && apt-get install -y asciidoctor bison build-essential cmake curl gnupg libaspell-dev libcurl4-gnutls-dev libgcrypt20-dev libjson-c-dev libncursesw5-dev libgnutls28-dev libwebsockets-dev pkg-config python3-dev zlib1g-dev \
@@ -17,7 +19,7 @@ WORKDIR /build
 COPY . /build
 
 ARG bitcoin_version
-RUN if [ "$arch" = "arm64" ]; then export btc_arch=aarch64; else export btc_arch=x86_64; fi \
+RUN if [ "$TARGETPLATFORM" = "linux/arm64"]; then export btc_arch=aarch64; else export btc_arch=x86_64; fi \
  && curl -sSLO https://bitcoincore.org/bin/bitcoin-core-${bitcoin_version}/bitcoin-${bitcoin_version}-${btc_arch}-linux-gnu.tar.gz \
  && curl -sSLO https://bitcoincore.org/bin/bitcoin-core-${bitcoin_version}/SHA256SUMS \
  && sha256sum --ignore-missing --check SHA256SUMS \
@@ -25,13 +27,13 @@ RUN if [ "$arch" = "arm64" ]; then export btc_arch=aarch64; else export btc_arch
  && mv bitcoin-${bitcoin_version} /bitcoin
 
 ARG lnd_version
-RUN curl -sSLO https://github.com/lightningnetwork/lnd/releases/download/${lnd_version}/lnd-linux-${arch}-${lnd_version}.tar.gz \
+RUN curl -sSLO https://github.com/lightningnetwork/lnd/releases/download/${lnd_version}/lnd-linux-${TARGETARCH}-${lnd_version}.tar.gz \
  && curl -sSLO https://github.com/lightningnetwork/lnd/releases/download/${lnd_version}/manifest-guggero-${lnd_version}.sig \
  && curl -sSLO https://github.com/lightningnetwork/lnd/releases/download/${lnd_version}/manifest-${lnd_version}.txt \
  && curl https://raw.githubusercontent.com/lightningnetwork/lnd/master/scripts/keys/guggero.asc | gpg --import \
  && gpg --verify manifest-guggero-${lnd_version}.sig manifest-${lnd_version}.txt \
- && tar xzf lnd-linux-${arch}-${lnd_version}.tar.gz \
- && mv lnd-linux-${arch}-${lnd_version} /lnd
+ && tar xzf lnd-linux-${TARGETARCH}-${lnd_version}.tar.gz \
+ && mv lnd-linux-${TARGETARCH}-${lnd_version} /lnd
 
 RUN cd /build/apps/libwebsockets && mkdir build && cd build && cmake .. -DLWS_WITH_LIBUV=ON && make && make install
 
@@ -81,7 +83,8 @@ RUN mkdir -p /opt \
 
 ###############
 FROM golang:1.17-${DEBIAN_VERSION} AS golang-builder
-ARG arch
+ARG TARGETPLATFORM
+ARG TARGETARCH
 
 RUN apt-get update \
     && apt-get install -y build-essential \
@@ -90,7 +93,7 @@ RUN apt-get update \
 WORKDIR /build
 COPY . /build
 
-ENV GOARCH=${arch}
+ENV GOARCH=${TARGETARCH}
 ENV GOOS=linux
 
 RUN cd /build/apps/circuitbreaker && mkdir bin && go build -o bin/circuitbreaker
@@ -127,7 +130,8 @@ ARG node_version
 
 ARG balanceofsatoshis_tag
 
-ARG arch
+ARG TARGETPLATFORM
+ARG TARGETARCH
 
 RUN echo "deb http://deb.debian.org/debian ${DEBIAN_VERSION}-backports main" | tee -a /etc/apt/sources.list \
  && apt update \
@@ -144,7 +148,6 @@ RUN echo "deb http://deb.debian.org/debian ${DEBIAN_VERSION}-backports main" | t
     libaspell15 \
     libc6 \
     libcap2 \
-    libpython3.7 \
     libssl1.1 \
     libuv1 \
     links \
@@ -164,7 +167,7 @@ RUN echo "deb http://deb.debian.org/debian ${DEBIAN_VERSION}-backports main" | t
     zlib1g <VERSION_SPECIFIC_DEPENDENCIES> \
  && apt clean all \
  && rm -rf /var/lib/apt/lists/* \
- && if [ "$arch" = "amd64" ]; then export node_arch=x64; else export node_arch=arm64; fi \
+ && if [ "$TARGETARCH" = "amd64" ]; then export node_arch=x64; else export node_arch=arm64; fi \
  && curl -sSLO "https://nodejs.org/dist/v$node_version/node-v$node_version-linux-$node_arch.tar.xz" \
  && tar -xf "node-v$node_version-linux-$node_arch.tar.xz" && rm -f "/node-v$node_version-linux-$node_arch.tar.xz" \
  && cd "/node-v$node_version-linux-$node_arch" && cp -r bin lib share /usr/local \
